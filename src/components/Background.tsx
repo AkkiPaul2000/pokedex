@@ -13,5 +13,4 @@ function Background() {
     </div>
   )
 }
-
 export default Background

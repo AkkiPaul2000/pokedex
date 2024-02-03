@@ -1,0 +1,25 @@
+// .app{
+//     z-index: 1;
+//     background: rgba(4,6,20,0.85);
+//     opacity: 0.1;
+//     height: 100vh;
+//     width: 100vw;
+//     backdrop-filter: blur(50px);
+//     -webkit-backdrop-filter: blur(50px);
+//     border: 1px solid black;
+// }
+.app{
+    z-index: 1;
+    background: rgba(4,6,20,0.85);
+    height: 100vh;
+    width: 100vw;
+    // backdrop-filter: blur(50px);
+    // -webkit-backdrop-filter: blur(50px);
+    // background-color: yellow;
+}
+.main-container{
+    position: relative;
+    max-width: 100vw;
+    overflow: hidden;
+    height: 100vh;
+}

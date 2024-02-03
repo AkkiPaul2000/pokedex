@@ -15,6 +15,7 @@ function App() {
         <Navbar/>
         <Wrapper/>
         <Footer/>
+        
       </div>
     </div>
   );
