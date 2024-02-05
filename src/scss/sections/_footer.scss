@@ -1,0 +1,18 @@
+footer{
+    border-top: 0.5px solid rgba(255,255,255,0.8);
+    display: grid;
+    grid-template-columns: 5rem auto 5rem;
+    .block{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img{
+            height: 3rem;
+        }
+        svg{
+            height: 2rem;
+            width: 2rem;
+            color: red;
+        }
+    }
+}

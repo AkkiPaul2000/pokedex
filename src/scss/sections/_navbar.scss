@@ -1,0 +1,26 @@
+nav{
+    border-bottom: 0.5px solid rgba(255,255,255,0.8);
+    // border-left: 0;
+    // border-right: 0;
+    display: grid;
+    grid-template-columns: 5rem auto 5rem;
+    .block{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img{
+            height: 3rem;
+        }
+        svg{
+            height: 2rem;
+            width: 2rem;
+        }
+    }
+    .block:nth-child(2){
+        background-color: yellow;
+        color: black;
+        div{
+            width: 100px;
+        }
+    }
+}

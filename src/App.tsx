@@ -9,13 +9,12 @@ import Footer from './sections/Footer';
 
 function App() {
   return (
-    <div className='main-container' >
+    <div className='main-container'>
       <Background/>
-      <div className='app'>
+      <div className='app' >
         <Navbar/>
         <Wrapper/>
         <Footer/>
-        
       </div>
     </div>
   );

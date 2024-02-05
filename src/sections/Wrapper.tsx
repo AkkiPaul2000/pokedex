@@ -2,7 +2,7 @@ import React from 'react'
 
 function Wrapper() {
   return (
-    <div>Wrapper</div>
+    <div className='content'></div>
   )
 }
 

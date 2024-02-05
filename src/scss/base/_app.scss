@@ -1,21 +1,22 @@
-// .app{
-//     z-index: 1;
-//     background: rgba(4,6,20,0.85);
-//     opacity: 0.1;
-//     height: 100vh;
-//     width: 100vw;
-//     backdrop-filter: blur(50px);
-//     -webkit-backdrop-filter: blur(50px);
-//     border: 1px solid black;
-// }
 .app{
     z-index: 1;
     background: rgba(4,6,20,0.85);
     height: 100vh;
     width: 100vw;
-    // backdrop-filter: blur(50px);
-    // -webkit-backdrop-filter: blur(50px);
-    // background-color: yellow;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border: 1px solid rgba(23,20,20,0.4);
+    display: grid;
+    grid-template-rows: 10vh auto 10vh;
+    grid-template-columns: 1fr;
+    .content{
+        margin: 0 5rem;
+        border: 0.5px solid rgba(255,255,255,0.2);
+        height: 80vh;
+        border-top: none;
+        border-bottom: none;
+
+    }
 }
 .main-container{
     position: relative;
