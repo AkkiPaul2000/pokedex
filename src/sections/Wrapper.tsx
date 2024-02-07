@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { Component } from 'react'
 
-function Wrapper() {
+const Wrapper=(Component:React.FC)=>()=>{
   return (
-    <div className='content'></div>
+    <div className='content'>
+      <Component />
+    </div>
   )
 }
 

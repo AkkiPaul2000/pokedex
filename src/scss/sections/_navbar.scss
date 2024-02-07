@@ -16,11 +16,38 @@ nav{
             width: 2rem;
         }
     }
-    .block:nth-child(2){
-        background-color: yellow;
-        color: black;
-        div{
-            width: 100px;
+    .data {
+        border: 0.5px solid rgba(255,255,255,0.8);
+        border-top: 0;
+        border-bottom: 0;
+        padding: 0 20px;
+        ul{
+            display: grid;
+            grid-template-columns:repeat(5,20%) ;
+            list-style-type:none;
+            z-index: 1;
+            position: relative;
+            text-align: center;
+            a{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                color: white;
+
+            }
+            li{
+                text-transform: uppercase;
+                cursor: pointer;
+                font-weight: 50px;
+                letter-spacing: 0.2rem;
+                height: 100%;
+                text-decoration: none;
+            }
         }
     }
+}
+.underline{
+    width: 100px;
+    background-color:white;
 }
