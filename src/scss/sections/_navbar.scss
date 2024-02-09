@@ -23,6 +23,7 @@ nav{
         padding: 0 20px;
         ul{
             display: grid;
+            height: 100%;
             grid-template-columns:repeat(5,20%) ;
             list-style-type:none;
             z-index: 1;
@@ -48,6 +49,19 @@ nav{
     }
 }
 .underline{
-    width: 100px;
+    display: block;
+    position: absolute;
+    z-index: 0;
+    bottom:1rem;
+    left: 1rem;
+    width: 20%;
+    height: calc(4px/2);
+    mix-blend-mode: initial;
     background-color:white;
+    &:nth-child(1){
+        transition: calc(0.5s *0.8) ease-in-out;
+    }
+    &:nth-child(2){
+        transition: calc(0.5*1.2) ease-in-out;
+    }
 }

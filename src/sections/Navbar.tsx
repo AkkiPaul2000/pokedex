@@ -26,20 +26,24 @@ function Navbar() {
   useEffect(()=>{
     const index=navigationRoutes.findIndex(({route})=>location.pathname.includes(route))
     ul(index)
-  })
-  function ul(number:number){
-    const underline=document.querySelector<HTMLElement>(".underline")
+  },[location.pathname,navigationRoutes])
+  function ul(index:number){
+    const underline=document.querySelectorAll<HTMLElement>(".underline")
+    for(let i =0;i<underline.length;i++){
+      underline[i].style.transform="translate3d("+index*100+"%,0,0)";
+
+    }
   }
   return (
     <nav className=''>
       <div className='block'><img src={pokeballIcon} alt='pokeball'/></div>
       <div className='data'>
+        
         <ul>
-          
+        <div className="underline"></div>
+        <div className="underline"></div>
+        <div className="underline"></div>
         {navigationRoutes.map(({name,route},index)=><Link to={route}><li>{name}</li></Link>)}
-        <div className="underline"></div>
-        <div className="underline"></div>
-        <div className="underline"></div>
         </ul>
       </div>
       <div className='block'><GiHamburgerMenu/></div>
