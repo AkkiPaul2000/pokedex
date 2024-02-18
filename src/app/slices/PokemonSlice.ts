@@ -1,10 +1,12 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-import {AppTypeInitialState} from "../../utils/Types"
+import {PokemonTypeInitialState} from "../../utils/Types"
 
-const initialState:AppTypeInitialState={};
-export const AppSlice=createSlice({
-    name:"app",
+const initialState:PokemonTypeInitialState={
+    allPokemon:undefined,
+};
+export const PokemonSlice=createSlice({
+    name:"pokemon",
     initialState,
     reducers:{},
 })
-export const {}=AppSlice.actions
+export const {}=PokemonSlice.actions

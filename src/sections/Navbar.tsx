@@ -38,7 +38,6 @@ function Navbar() {
     <nav className=''>
       <div className='block'><img src={pokeballIcon} alt='pokeball'/></div>
       <div className='data'>
-        
         <ul>
         <div className="underline"></div>
         <div className="underline"></div>
