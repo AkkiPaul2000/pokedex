@@ -4,6 +4,7 @@ import { useAppDispatch } from '../app/hooks'
 
 function Search() {
   const dispatch=useAppDispatch()
+  
   useEffect(()=>{
     dispatch(getInitialPokemonData())
   },[dispatch])

@@ -6,7 +6,7 @@ import { PokemonSlice } from './slices/PokemonSlice';
 export const store = configureStore({
   reducer: {
     pokemon:PokemonSlice.reducer,
-    app:AppSlice.reducer, 
+    app:AppSlice.reducer,
   },
 });
 
