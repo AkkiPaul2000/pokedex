@@ -38,6 +38,7 @@ export const getPokemonsData = createAsyncThunk(
           });
         }
       }
+      // console.log(pokemonsData)
       return pokemonsData;
     } catch (err) {
       console.error(err);

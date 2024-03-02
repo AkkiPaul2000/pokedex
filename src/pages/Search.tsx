@@ -3,10 +3,11 @@ import { getInitialPokemonData } from '../app/reducers/getInitialPokemonData'
 import { useAppDispatch } from '../app/hooks'
 import { useSelector } from 'react-redux'
 import { getPokemonsData } from '../app/reducers/getPokemonsData'
+import PokemonCardGrid from '../components/PokemonCardGrid'
 
 function Search() {
   const dispatch=useAppDispatch()
-  const {allPokemon}=useSelector(({pokemon})=>pokemon)
+  const {allPokemon,randomPokemons}=useSelector(({pokemon})=>pokemon)
   useEffect(()=>{
     dispatch(getInitialPokemonData())
     
@@ -18,8 +19,12 @@ function Search() {
       dispatch(getPokemonsData(randomPokemonsID))
     }
   },[allPokemon,dispatch])
+  console.log(randomPokemons)
   return (
-    <div>Search</div>
+    <div>
+     <input/>
+     <PokemonCardGrid pokemons={randomPokemons}/>
+      </div>
   )
 }
 

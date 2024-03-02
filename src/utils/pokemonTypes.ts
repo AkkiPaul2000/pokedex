@@ -9,7 +9,7 @@ import flying from "../assets/types/flying.png";
 import ghost from "../assets/types/ghost.png";
 import grass from "../assets/types/grass.png";
 import ground from "../assets/types/ground.svg";
-import ice from "../assets/types/ice.svg";
+import ice from "../assets/types/ice.svg"; 
 import normal from "../assets/types/normal.svg";
 import poison from "../assets/types/poison.svg";
 import psychic from "../assets/types/psychic.svg";
