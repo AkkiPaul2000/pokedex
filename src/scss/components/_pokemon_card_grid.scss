@@ -1,0 +1,78 @@
+.pokemon-card-grid-container{
+    max-height: 80vh;
+    overflow-y: scroll;
+    color: white;
+    .pokemon-card-grid{
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+        gap:4rem;
+        margin: 4rem;
+        margin-top: 2rem;
+        .pokemon-card{
+            position: relative;
+            width: 250px;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: rgb(255, 255 ,255,0.125);
+            border-radius: 1rem;
+            &-list{
+                position: absolute;
+                top: 0.7rem;
+                left: 0.8rem;
+                font-size: 1rem;
+                cursor: pointer;
+                .plus{
+                    color: #27af0f;
+                }
+                .trash{
+                    color: #e21b5a;
+                }
+            }
+            &-compare{
+                position: absolute;
+                top: 0.7rem;
+                right: 0.8rem;
+                font-size: 1rem;
+                cursor: pointer;
+                svg{
+                    color: #1f51ff;
+                }
+            }
+            &-title{
+                    align-items: center;
+                    cursor: pointer;
+                 }
+            &-image{
+                    height: 10rem;
+                    cursor: pointer;
+                    }
+            &-types{
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(auto-fit,minmax(60px,1fr));
+                gap: 1rem;
+                margin-top: 0.5rem;
+                
+                &-type{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                    margin-top: 0.4rem;
+                    &-image{
+                        height: 2rem;
+                        }
+                    &-text{
+                        font-weight: 200;
+                        font-size: smaller;
+                    }
+                }
+
+            }
+            
+        }
+    }
+}

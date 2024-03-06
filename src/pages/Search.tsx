@@ -21,11 +21,10 @@ function Search() {
   },[allPokemon,dispatch])
   console.log(randomPokemons)
   return (
-    <div>
-     <input/>
-     <PokemonCardGrid pokemons={randomPokemons}/>
-      </div>
-  )
+    <div className='search'> 
+      <input className='bar' type='text' placeholder='Search Pokemon'  />
+      <PokemonCardGrid pokemons={randomPokemons!}/>
+    </div>
+)
 }
-
 export default Search
