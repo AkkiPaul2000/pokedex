@@ -3,6 +3,7 @@ export interface AppTypeInitialState{}
 export interface PokemonTypeInitialState{
     allPokemon:undefined|genericPokemonType[];
     randomPokemons:generatedPokemonType[]| undefined;
+    compareQueue:generatedPokemonType[];
 }
 
 export interface genericPokemonType{

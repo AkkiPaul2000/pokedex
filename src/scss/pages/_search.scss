@@ -14,5 +14,8 @@
         border: none;
         color: white;
         box-shadow: rgba(0,0,0,0.35) 0px 5px 15px;
+        &::-webkit-input-placeholder{
+            color: rgba(255,255,255,0.779);
+        }
     }
 }
