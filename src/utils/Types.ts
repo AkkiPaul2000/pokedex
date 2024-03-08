@@ -1,4 +1,6 @@
-export interface AppTypeInitialState{}
+export interface AppTypeInitialState{
+  toasts:string[] 
+}
 
 export interface PokemonTypeInitialState{
     allPokemon:undefined|genericPokemonType[];

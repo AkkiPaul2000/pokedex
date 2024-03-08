@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import Background from './components/Background';
 import './App.css';
@@ -7,18 +7,39 @@ import './scss/index.scss'
 import Navbar from './sections/Navbar';
 import Footer from './sections/Footer';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import "react-toastify/dist/ReactToastify.css";
 import Search from './pages/Search';
+import { ToastContainer,ToastOptions,toast } from 'react-toastify';
 import About from './pages/About';
 import List from './pages/List';
 import Compare from './pages/Compare';
 import Pokemon from './pages/Pokemon';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { clearToasts } from './app/slices/AppSlice';
 
 function App() {
+  const { toasts } = useAppSelector(({ app }) => app);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (toasts.length) {
+      const toastOptions: ToastOptions = {
+        position: "bottom-right",
+        autoClose: 2000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      };
+      toasts.forEach((message: string) => {
+        toast(message, toastOptions);
+      });
+      dispatch(clearToasts());
+    }
+  }, [toasts, dispatch]);
   return (
     <div className='main-container'>
       <Background/>
       <BrowserRouter>
-      <div className='app' >
+      <div className='app'>
         <Navbar/>
         <Routes>
           <Route element={<Search/>} path='/search'></Route>
@@ -29,6 +50,7 @@ function App() {
           <Route element={<Navigate to="/pokemon/1"/>} path='*'></Route>
         </Routes>
         <Footer/>
+        <ToastContainer/>
       </div>
       </BrowserRouter>
     </div>

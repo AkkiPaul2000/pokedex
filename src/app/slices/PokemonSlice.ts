@@ -34,4 +34,4 @@ export const PokemonSlice=createSlice({
         builder.addCase(getPokemonsData.fulfilled,(state,action)=>{state.randomPokemons=action.payload})
     }
 })
-export const {}=PokemonSlice.actions
+export const {addToCompare,removeFromCompare }=PokemonSlice.actions
