@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { addToCompare } from '../app/slices/PokemonSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setToast } from '../app/slices/AppSlice';
+import { addPokemonToList } from '../app/reducers/addPokemonToList';
 
 
 function PokemonCardGrid({pokemons}:any) {
@@ -20,7 +21,7 @@ function PokemonCardGrid({pokemons}:any) {
         {pokemons && pokemons.length>0 && 
         pokemons.map((poke:any)=><div className='pokemon-card' key={poke.id}>
             <div className='pokemon-card-list'>
-            {location.pathname.includes("/pokemon")?<FaPlus className="plus"/>:location.pathname.includes("/search")?<FaPlus className="plus"/>:<FaTrash className='trash'/>}
+            {location.pathname.includes("/pokemon")|| location.pathname.includes("/search")?<FaPlus className="plus" onClick={()=>dispatch(addPokemonToList(poke))}/>:<FaTrash className='trash'/>}
             </div>
             <div className='pokemon-card-compare'>
               <IoGitCompare onClick={()=>{

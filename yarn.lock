@@ -5239,7 +5239,7 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-firebase@^10.7.2:
+firebase@^10.8.1:
   version "10.8.1"
   resolved "https://registry.npmjs.org/firebase/-/firebase-10.8.1.tgz"
   integrity sha512-4B2jzhU/aumfKL446MG41/T5+t+9d9urf5XGrjC0HRQUm4Ya/amV48HBchnje69ExaJP5f2WxO9OX3wh9ee4wA==
