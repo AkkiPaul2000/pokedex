@@ -5,6 +5,7 @@ import { pokemonTypes } from '../utils/pokemonTypes';
 import { useAppDispatch } from '../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { removeFromCompare } from '../app/slices/PokemonSlice';
+import { addPokemonToList } from '../app/reducers/addPokemonToList';
 
 function CompareContainer({pokemon=undefined,isEmpty=false}:{pokemon?:generatedPokemonType,isEmpty?:boolean}) {
   const navigate = useNavigate();
@@ -117,7 +118,7 @@ function CompareContainer({pokemon=undefined,isEmpty=false}:{pokemon?:generatedP
           <div className="compare-action-buttons">
             <button
               className="compare-btn"
-              
+              onClick={()=>dispatch(addPokemonToList(pokemon))}
             >
               Add
             </button>

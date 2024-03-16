@@ -9,6 +9,7 @@ import { addToCompare } from '../app/slices/PokemonSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setToast } from '../app/slices/AppSlice';
 import { addPokemonToList } from '../app/reducers/addPokemonToList';
+import { removePokemon } from '../app/reducers/removePokemonFromUserLists';
 
 
 function PokemonCardGrid({pokemons}:any) {
@@ -21,7 +22,14 @@ function PokemonCardGrid({pokemons}:any) {
         {pokemons && pokemons.length>0 && 
         pokemons.map((poke:any)=><div className='pokemon-card' key={poke.id}>
             <div className='pokemon-card-list'>
-            {location.pathname.includes("/pokemon")|| location.pathname.includes("/search")?<FaPlus className="plus" onClick={()=>dispatch(addPokemonToList(poke))}/>:<FaTrash className='trash'/>}
+            {location.pathname.includes("/pokemon")|| location.pathname.includes("/search")?<FaPlus className="plus" onClick={()=>dispatch(addPokemonToList(poke))}/>:
+            <FaTrash className='trash' 
+            onClick={async()=>{
+              await dispatch(removePokemon({id:poke.firebaseId!}))
+              dispatch(setToast("pokemon removed Successfully"))
+            }
+          }
+            />}
             </div>
             <div className='pokemon-card-compare'>
               <IoGitCompare onClick={()=>{
