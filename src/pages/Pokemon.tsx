@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 import { useCallback, useEffect, useState } from "react";
 import Wrapper from "../sections/Wrapper";
 import { useParams } from "react-router-dom";
@@ -153,7 +152,7 @@ function Pokemon() {
 
   return (
     <>
-      {/* {!isDataLoading && currentPokemon ? ( */}
+      {!isDataLoading && currentPokemon ? (
         <>
         {console.log(params)}
           {currentPokemonTab === pokemonTabs.description && <Description />}
@@ -161,10 +160,9 @@ function Pokemon() {
           {currentPokemonTab === pokemonTabs.locations && <Locations/>}
           {currentPokemonTab === pokemonTabs.moves && <CapableMoves />}
         </>
-      {/* ) : (
+       ) : (
         <Loader />
       )}
-      pokemon */}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import logo from './logo.svg';
 import Background from './components/Background';
 import './App.css';
@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { clearToasts, setUserStatus } from './app/slices/AppSlice';
 import { onAuthStateChanged } from 'firebase/auth';
 import { firebaseAuth } from './utils/FirebaseConfig';
+import Loader from './components/Loader';
 
 function App() {
   const { toasts } = useAppSelector(({ app }) => app);
@@ -48,6 +49,7 @@ function App() {
     <div className='main-container'>
       <Background/>
       <BrowserRouter>
+      <Suspense fallback={<Loader />}>
       <div className='app'>
         <Navbar/>
         <Routes>
@@ -61,6 +63,7 @@ function App() {
         <Footer/>
         <ToastContainer/>
       </div>
+      </Suspense>
       </BrowserRouter>
     </div>
   );

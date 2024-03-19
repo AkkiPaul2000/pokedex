@@ -1,15 +1,18 @@
 import React, { useEffect } from 'react'
 import { getInitialPokemonData } from '../app/reducers/getInitialPokemonData'
-import { useAppDispatch } from '../app/hooks'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { useSelector } from 'react-redux'
 import { getPokemonsData } from '../app/reducers/getPokemonsData'
 import PokemonCardGrid from '../components/PokemonCardGrid'
 import Wrapper from '../sections/Wrapper'
 import { debounce } from '../utils/Debounce'
+import Loader from '../components/Loader'
 
 function Search() {
   const dispatch=useAppDispatch()
   const {allPokemon,randomPokemons}=useSelector(({pokemon})=>pokemon)
+  const isLoading = useAppSelector(({ app: { isLoading } }) => isLoading);
+
   function print(e:any){
     console.log(e)
   }
@@ -39,10 +42,15 @@ function Search() {
     }
   }
   return (
+    <>
+    {isLoading ? (
+      <Loader />
+    ) : (
     <div className='search'> 
       <input className='bar' type='text' placeholder='Search Pokemon' onChange={(e)=>handleChange(e.target.value)}  />
       <PokemonCardGrid pokemons={randomPokemons!}/>
-    </div>
+    </div>)}
+    </>
 )
 }
 export default Wrapper(Search)

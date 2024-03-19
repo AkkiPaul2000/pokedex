@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { getPokemonsData } from '../../app/reducers/getPokemonsData'
 import PokemonCardGrid from '../../components/PokemonCardGrid'
+import Loader from '../../components/Loader'
 
 function Evolution() {
   const dispatch=useAppDispatch()
@@ -16,7 +17,7 @@ function Evolution() {
     fetchData()
   },[dispatch,currentPokemon])
   return (
-    <div>{isLoaded && <PokemonCardGrid pokemons={randomPokemons!}/>}</div>
+    <div>{isLoaded ?( <PokemonCardGrid pokemons={randomPokemons!}/>):(<Loader/>)}</div>
   )
 }
 

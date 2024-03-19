@@ -8,8 +8,8 @@ function Description() {
 
   return (
     <div>
-      <PokeInfo data={pokemonData} />
-      <PokemonContainer image={pokemonData?.image!} />
+      {pokemonData && <PokeInfo data={pokemonData} />}
+      {pokemonData && <PokemonContainer image={pokemonData?.image!} />}
     </div>
   )
 }

@@ -32,8 +32,7 @@ export default function PokeInfo({
   };
   return (
     <>
-    {console.log(data)}
-      {/* <div className="details">
+      <div className="details">
         <h1 className="name">{data?.name}</h1>
         <h3>Type: {data?.types.join(" - ")}</h3>
         <h3>Evolution: {data?.evolutionLevel}</h3>
@@ -100,7 +99,7 @@ export default function PokeInfo({
         >
           Add Pokemon
         </button>
-      </div> */}
+      </div>
     </>
   );
 }
