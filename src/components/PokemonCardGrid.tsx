@@ -5,11 +5,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { FaPlus } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { useDispatch } from 'react-redux';
-import { addToCompare } from '../app/slices/PokemonSlice';
+import { addToCompare, setCurrentPokemon } from '../app/slices/PokemonSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setToast } from '../app/slices/AppSlice';
+import { setPokemonTab, setToast } from '../app/slices/AppSlice';
 import { addPokemonToList } from '../app/reducers/addPokemonToList';
 import { removePokemon } from '../app/reducers/removePokemonFromUserLists';
+import { pokemonTabs } from '../utils/Constant';
 
 
 function PokemonCardGrid({pokemons}:any) {
@@ -37,7 +38,11 @@ function PokemonCardGrid({pokemons}:any) {
                 dispatch(setToast(`${poke.name}Has been added to Compare Queue`))
                 }} /></div>
             <h3 className='pokemon-card-title'>{poke.name}</h3>
-            <img src={poke.image} alt={poke.name} className='pokemon-card-image' loading='lazy' onClick={()=>navigate(`/pokemon/${poke.id}`)}/>
+            <img src={poke.image} alt={poke.name} className='pokemon-card-image' loading='lazy' onClick={()=>{
+              dispatch(setPokemonTab(pokemonTabs.description))
+              dispatch(setCurrentPokemon(undefined))
+              navigate(`/pokemon/${poke.id}`)
+              }}/>
             <div className='pokemon-card-types'>{poke.types.map((type:pokemonTypeInterface,index:number)=>{
               const pokeType=Object.keys(type)
               console.log(type[pokeType[0]].image)
