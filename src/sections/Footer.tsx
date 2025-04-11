@@ -15,7 +15,7 @@ function Footer() {
   const currentPokemonTab=useAppSelector(({app:{currentPokemonTab}})=>currentPokemonTab)
   const handleLogOut=()=>{
     signOut(firebaseAuth)
-    dispatch(setUserStatus(undefined))
+    dispatch(setUserStatus(null))
     dispatch(setToast("Logged out successfully!!"))
   }
   const routes = [

@@ -2,14 +2,16 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { setLoading } from "../slices/AppSlice";
 import { generatedPokemonType, genericPokemonType } from "../../utils/Types";
 import { defaultImages, images } from "../../utils/pokemonImage";
 import { pokemonTypes } from "../../utils/pokemonTypes";
 
 export const getPokemonsData = createAsyncThunk(
   "pokemon/randomPokemon",
-  async (pokemons: genericPokemonType[]) => {
+  async (pokemons: genericPokemonType[], { dispatch }) => {
     try {
+      dispatch(setLoading(true));
       const pokemonsData: generatedPokemonType[] = [];
       for await (const pokemon of pokemons) {
         const {
@@ -38,9 +40,12 @@ export const getPokemonsData = createAsyncThunk(
           });
         }
       }
+      dispatch(setLoading(false));
       return pokemonsData;
     } catch (err) {
+      dispatch(setLoading(false));
       console.error(err);
+      throw err;
     }
   }
 );
