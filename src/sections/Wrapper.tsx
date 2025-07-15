@@ -1,11 +1,16 @@
-import React, { Component } from 'react'
+import React from 'react';
+import { withErrorHandling } from '../components/withErrorHandling';
 
-const Wrapper=(Component:React.FC)=>()=>{
-  return (
-    <div className='content'>
-      <Component />
-    </div>
-  )
-}
+const Wrapper = (Component: React.FC) => {
+  const WrappedComponent = () => {
+    return (
+      <div className='content'>
+        <Component />
+      </div>
+    );
+  };
+  
+  return withErrorHandling(WrappedComponent);
+};
 
-export default Wrapper
+export default Wrapper;

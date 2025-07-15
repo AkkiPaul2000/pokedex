@@ -20,7 +20,7 @@ function PokemonCardGrid({pokemons}:any) {
   const dispatch=useAppDispatch();
   return (
     <div className='pokemon-card-grid-container'><div className='pokemon-card-grid'>
-        {pokemons && pokemons.length>0 && 
+        {pokemons && pokemons.length>0 ?(
         pokemons.map((poke:any)=><div className='pokemon-card' key={poke.id}>
             <div className='pokemon-card-list'>
             {location.pathname.includes("/pokemon")|| location.pathname.includes("/search")?<FaPlus className="plus" onClick={()=>dispatch(addPokemonToList(poke))}/>:
@@ -52,7 +52,7 @@ function PokemonCardGrid({pokemons}:any) {
                 <h4 className='pokemon-card-types-type-text'>{pokeType[0]}</h4>
             </div>)}
             )}</div>
-            </div>)
+            </div>)):(<div>Add Pokmons to your List</div>)
         }
         </div></div>
   )

@@ -11,24 +11,67 @@
         .pokemon-card{
             position: relative;
             width: 250px;
+            
             border: 1px solid black;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            background-color: rgb(255, 255 ,255,0.125);
+            background-color: rgba(255, 255, 255, 0.125);
             border-radius: 1rem;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            &:hover {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+                background-color: rgba(255, 255, 255, 0.2);
+            }
             &-list{
                 position: absolute;
                 top: 0.7rem;
                 left: 0.8rem;
                 font-size: 1rem;
                 cursor: pointer;
+                z-index: 2;
                 .plus{
                     color: #27af0f;
+                    transition: transform 0.2s ease;
+                    position: relative;
+                    &:hover {
+                        transform: scale(1.2);
+                        &::after {
+                            content: 'Add to your collection';
+                            position: absolute;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            bottom: -25px;
+                            background: rgba(0, 0, 0, 0.8);
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 12px;
+                            white-space: nowrap;
+                        }
+                    }
                 }
                 .trash{
                     color: #e21b5a;
+                    transition: transform 0.2s ease;
+                    position: relative;
+                    &:hover {
+                        transform: scale(1.2);
+                        &::after {
+                            content: 'Delete';
+                            position: absolute;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            bottom: -25px;
+                            background: rgba(0, 0, 0, 0.8);
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 12px;
+                            white-space: nowrap;
+                        }
+                    }
                 }
             }
             &-compare{
@@ -37,17 +80,45 @@
                 right: 0.8rem;
                 font-size: 1rem;
                 cursor: pointer;
+                
+                z-index: 2;
                 svg{
                     color: #1f51ff;
+                    transition: transform 0.2s ease;
+                    position: relative;
+                    &:hover {
+                        transform: scale(1.2);
+                        &::after {
+                            content: 'Compare Pokemon';
+                            position: absolute;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            bottom: -25px;
+                            background: rgba(0, 0, 0, 0.8);
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 12px;
+                            white-space: nowrap;
+                        }
+                    }
                 }
             }
             &-title{
                     align-items: center;
                     cursor: pointer;
+                    transition: all 0.3s ease;
+                    margin: 0.5rem 0;
+                    &:hover {
+                        color: var(--accent-color);
+                    }
                  }
             &-image{
                     height: 10rem;
                     cursor: pointer;
+                    transition: all 0.3s ease;
+                    &:hover {
+                        transform: scale(1.1);
+                    }
                     }
             &-types{
                 width: 100%;
@@ -60,8 +131,12 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    flex-direction: column;
+                    flex-direction: column; 
                     margin-top: 0.4rem;
+                    transition: transform 0.2s ease;
+                    &:hover {
+                        transform: scale(1.1);
+                    }
                     &-image{
                         height: 2rem;
                         }

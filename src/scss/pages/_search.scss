@@ -24,4 +24,24 @@
         color: rgba(255, 255, 255, 0.8);
         font-size: 1.2rem;
     }
+    .error-message {
+        color: #e21b5a;
+        text-align: center;
+        padding: 1rem;
+        background-color: rgba(226, 27, 90, 0.1);
+        border-radius: 0.5rem;
+        width: 100%;
+        max-width: 500px;
+    }
+    .login-message {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        margin-top: 2rem;
+    }
+    .no-results {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.1rem;
+    }
 }

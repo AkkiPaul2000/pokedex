@@ -77,7 +77,7 @@ function CompareContainer({pokemon=undefined,isEmpty=false}:{pokemon?:generatedP
   return (
     <div className='compare-container'>
       {isEmpty && (
-        <div className='empty'>
+        <div className='empty' onClick={() => navigate('/search')}>
           <button><FaPlus/></button>
           <h3>Add to Compare</h3>
         </div>
