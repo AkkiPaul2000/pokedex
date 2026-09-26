@@ -1,28 +1,28 @@
 .capable-moves {
     width: 100%;
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     .capable-moves-title {
       color: white;
       text-transform: uppercase;
       letter-spacing: 0.1rem;
       padding: 1rem;
+      margin: 0;
+      font-size: clamp(1.4rem, 3vw, 2rem);
     }
     .capable-moves-list {
       list-style-type: none;
+      margin: 0;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-auto-rows: 150px;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+      grid-auto-rows: minmax(5.5rem, auto);
       gap: 1rem;
       padding: 1rem;
-      width: 100%;
-      max-width: 97%;
-      overflow-y: scroll;
-  
+
       .move {
-        height: 100%;
-        padding: 0 2rem;
-        font-size: x-large;
+        padding: 1rem;
+        font-size: clamp(0.9rem, 1.5vw, 1.35rem);
+        overflow-wrap: anywhere;
         background-color: rgba(255, 255, 255, 0.125);
         border-radius: 1rem;
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -33,6 +33,10 @@
         text-align: center;
         cursor: pointer;
         text-transform: uppercase;
+        transition: transform 0.25s ease-out, box-shadow 0.3s;
+        &:hover {
+          box-shadow: 0 0 30px color-mix(in srgb, var(--accent-color) 60%, transparent);
+        }
       }
     }
     .ability {
@@ -41,4 +45,3 @@
       }
     }
   }
-  

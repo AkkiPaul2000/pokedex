@@ -1,67 +1,112 @@
 nav{
-    border-bottom: 0.5px solid rgba(255,255,255,0.8);
-    // border-left: 0;
-    // border-right: 0;
+    position: relative;
+    z-index: 5; // the mobile menu drops over the page
+    height: var(--bar);
     display: grid;
-    grid-template-columns: 5rem auto 5rem;
+    grid-template-columns: var(--block) minmax(0, 1fr) var(--block);
+    border-bottom: 0.5px solid rgba(255,255,255,0.8);
     .block{
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        display: grid;
+        place-items: center;
         img{
-            height: 3rem;
-        }
-        svg{
-            height: 2rem;
-            width: 2rem;
+            // No % here: in this auto-sized row it is cyclic, and the row grows to the PNG's 512px.
+            height: min(3rem, calc(var(--bar) - 1.5rem));
         }
     }
     .data {
+        min-width: 0;
         border: 0.5px solid rgba(255,255,255,0.8);
-        border-top: 0;
-        border-bottom: 0;
-        padding: 0 20px;
-        ul{
-            display: grid;
-            height: 100%;
-            grid-template-columns:repeat(5,20%) ;
-            list-style-type:none;
-            z-index: 1;
+        border-block: 0;
+    }
+    .links{
+        list-style: none;
+        margin: 0;
+        padding: 0 1rem;
+        height: 100%;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        li{ display: flex; }
+        a{
             position: relative;
-            text-align: center;
-            a{
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                text-decoration: none;
-                color: white;
-
-            }
-            li{
-                text-transform: uppercase;
-                cursor: pointer;
-                font-weight: 50px;
-                letter-spacing: 0.2rem;
-                height: 100%;
-                text-decoration: none;
-            }
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-size: clamp(0.78rem, 1.1vw, 1rem);
+            letter-spacing: clamp(0.08rem, 0.2vw, 0.2rem);
+            opacity: 0.75;
+            transition: opacity 0.2s;
+            &:hover, &.active{ opacity: 1; }
+        }
+    }
+    // Rendered inside the active link, so it is centred under it by construction.
+    .underline{
+        position: absolute;
+        left: 18%;
+        right: 18%;
+        bottom: -1px;
+        height: 2px;
+        border-radius: 2px;
+        background-color: white;
+    }
+    .current{ display: none; }
+    .menu-toggle{
+        display: none;
+        place-items: center;
+        padding: 0.5rem;
+        background: none;
+        border: 0;
+        color: white;
+        cursor: pointer;
+        svg{
+            height: 1.75rem;
+            width: 1.75rem;
         }
     }
 }
-.underline{
-    display: block;
+.mobile-menu{
     position: absolute;
-    z-index: 0;
-    bottom:1rem;
-    left: 0.5rem;
-    width: 20%;
-    height: calc(4px/2);
-    mix-blend-mode: initial;
-    background-color:white;
-    &:nth-child(1){
-        transition: calc(0.5s *0.8) ease-in-out;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0.5rem 0;
+    list-style: none;
+    background: rgba(4,6,20,0.97);
+    border-bottom: 0.5px solid rgba(255,255,255,0.8);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    a, button{
+        display: block;
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background: none;
+        border: 0;
+        color: white;
+        font: inherit;
+        text-align: left;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.15rem;
+        cursor: pointer;
     }
-    &:nth-child(2){
-        transition: calc(0.5*1.2) ease-in-out;
+    a.active{ color: var(--accent-color); }
+}
+@media (max-width: 640px) {
+    nav{
+        .links{ display: none; }
+        .current{
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+        }
+        .menu-toggle{ display: grid; }
     }
 }

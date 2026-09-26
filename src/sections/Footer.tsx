@@ -1,51 +1,44 @@
 import React from 'react'
-import pokeballIcon from '../assets/pokeball-icon.png'
 import {MdOutlinePowerSettingsNew} from 'react-icons/md'
-import { signOut } from 'firebase/auth'
-import { firebaseAuth } from '../utils/FirebaseConfig'
-import { useDispatch } from 'react-redux'
-import { setPokemonTab, setToast, setUserStatus } from '../app/slices/AppSlice'
+import { motion } from 'framer-motion'
+import { setPokemonTab } from '../app/slices/AppSlice'
 import { pokemonTabs } from '../utils/Constant'
 import { useLocation } from 'react-router-dom'
-import { useAppSelector } from '../app/hooks'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import { logout } from '../auth/Login'
+
+const routes = [
+  { name: pokemonTabs.description, value: "Description" },
+  { name: pokemonTabs.evolution, value: "Evolution" },
+  { name: pokemonTabs.locations, value: "Catching" },
+  { name: pokemonTabs.moves, value: "Capable Moves" },
+];
 
 function Footer() {
-  const location=useLocation()
-  const dispatch=useDispatch()
-  const currentPokemonTab=useAppSelector(({app:{currentPokemonTab}})=>currentPokemonTab)
-  const handleLogOut=()=>{
-    signOut(firebaseAuth)
-    dispatch(setUserStatus(null))
-    dispatch(setToast("Logged out successfully!!"))
-  }
-  const routes = [
-    {
-      name: pokemonTabs.description,
-      value: "Description",
-    },
-    {
-      name: pokemonTabs.evolution,
-      value: "Evolution",
-    },
-    {
-      name: pokemonTabs.locations,
-      value: "Catching",
-    },
-    {
-      name: pokemonTabs.moves,
-      value: "Capable Moves",
-    },
-  ];
+  const { pathname } = useLocation()
+  const dispatch = useAppDispatch()
+  const currentPokemonTab = useAppSelector(({ app }) => app.currentPokemonTab)
+  const userInfo = useAppSelector(({ app }) => app.userInfo)
+  const hasTabs = pathname.startsWith("/pokemon")
   return (
-    <footer>
+    <footer className={hasTabs ? 'has-tabs' : undefined}>
       <div className='block'></div>
       <div className='data'>
-        {location.pathname.includes("/pokemon") &&
+        {hasTabs &&
         <ul>
-        {routes.map((route)=><li key={route.name} className={`${currentPokemonTab==route.name?"active":""}`} onClick={()=>{dispatch(setPokemonTab(route.name))}}>{route.value}</li>)}
+          {routes.map((route) => (
+            <li key={route.name}>
+              <button onClick={() => dispatch(setPokemonTab(route.name))} aria-pressed={currentPokemonTab === route.name}>
+                {currentPokemonTab === route.name && <motion.span layoutId='tab-pill' className='pill' transition={{ type: 'spring', stiffness: 500, damping: 40 }} />}
+                <span>{route.value}</span>
+              </button>
+            </li>
+          ))}
         </ul>}
       </div>
-      <div className='block'><MdOutlinePowerSettingsNew onClick={handleLogOut}/></div>
+      <div className='block'>
+        {userInfo && <button className='logout' onClick={() => dispatch(logout())} title='Log out' aria-label='Log out'><MdOutlinePowerSettingsNew /></button>}
+      </div>
     </footer>
   )
 }

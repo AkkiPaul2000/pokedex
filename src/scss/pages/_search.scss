@@ -4,9 +4,22 @@
     max-width: 100%;
     color: white;
     text-transform: uppercase;
+    // Column layout so the results scroller gets exactly the height left under the bar;
+    // otherwise its bottom (where the infinite-scroll sentinel lives) is clipped by .content.
+    display: flex;
+    flex-direction: column;
+    .search-content{
+        flex: 1;
+        min-height: 0;
+    }
+    .search-sentinel{
+        height: 5rem;
+        img{ height: 3rem; }
+    }
     .bar{
+        flex: none;
         width: 100%;
-        height: 9%;
+        height: clamp(3rem, 8vh, 4.25rem);
         padding-left: 1rem;
         font-size: 1.3rem;
         background-color: rgba(255,255,255,0.125 );
@@ -14,15 +27,14 @@
         border: none;
         color: white;
         box-shadow: rgba(0,0,0,0.35) 0px 5px 15px;
+        transition: background-color 0.3s, box-shadow 0.3s;
+        &:focus{
+            background-color: rgba(255,255,255,0.18);
+            box-shadow: inset 0 -2px 0 var(--accent-color), 0 10px 30px rgba(0,0,0,0.4);
+        }
         &::-webkit-input-placeholder{
             color: rgba(255,255,255,0.779);
         }
-    }
-    .searching-indicator {
-        text-align: center;
-        margin-top: 2rem;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 1.2rem;
     }
     .error-message {
         color: #e21b5a;
@@ -32,12 +44,6 @@
         border-radius: 0.5rem;
         width: 100%;
         max-width: 500px;
-    }
-    .login-message {
-        text-align: center;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 1.2rem;
-        margin-top: 2rem;
     }
     .no-results {
         text-align: center;

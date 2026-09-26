@@ -5,11 +5,12 @@ import PokeInfo from '../../components/PokeInfo'
 
 function Description() {
   const pokemonData=useAppSelector(({pokemon:{currentPokemon}})=>currentPokemon)
+  if (!pokemonData) return null
 
   return (
-    <div>
-      {pokemonData && <PokeInfo data={pokemonData} />}
-      {pokemonData && <PokemonContainer image={pokemonData?.image!} />}
+    <div className='pokemon-detail' data-jp={pokemonData.japaneseName}>
+      <PokeInfo data={pokemonData} />
+      <PokemonContainer image={pokemonData.image} />
     </div>
   )
 }

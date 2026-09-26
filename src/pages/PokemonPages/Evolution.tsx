@@ -17,7 +17,7 @@ function Evolution() {
     fetchData()
   },[dispatch,currentPokemon])
   return (
-    <div>{isLoaded ?( <PokemonCardGrid pokemons={randomPokemons!}/>):(<Loader/>)}</div>
+    <div className='page'>{isLoaded ?( <PokemonCardGrid pokemons={randomPokemons!}/>):(<Loader/>)}</div>
   )
 }
 

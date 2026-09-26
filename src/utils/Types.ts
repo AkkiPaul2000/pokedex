@@ -32,13 +32,19 @@ export interface userPokemonType extends generatedPokemonType {
 export interface currentPokemonType {
   id: number;
   name: string;
-  types: pokemonTypeInterface[];
+  types: pokemonElementType[];
   image: string;
   stats: pokemonStatsType[];
   encounters: string[];
-  evolutionLevel: number;
+  evolutionLevel?: number;
   evolution: { level: number; pokemon: { name: string; url: string } }[];
   pokemonAbilities: { abilities: string[]; moves: string[] };
+  height: number; // metres
+  weight: number; // kilograms
+  genus?: string;
+  description?: string;
+  japaneseName?: string;
+  region?: string;
 }
 
 export interface pokemonStatsType {

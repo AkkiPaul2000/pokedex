@@ -5,7 +5,7 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa'
 function About() {
   return (
     <div className="profile">
-      <img src={myPic} alt='myimage' className='profile-image'/>
+      <img src={myPic} alt='myimage' className='profile-image tilt'/>
       <h1 className='profile-text'>Hi I am Akash Paul</h1>
       <h4 className="profile-text">My Portfolio is just right <a href='https://my-portfolio-akash-pauls-projects.vercel.app/'>HERE</a></h4>
       <div className="profile-links">

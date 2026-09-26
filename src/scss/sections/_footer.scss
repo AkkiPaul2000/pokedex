@@ -1,52 +1,69 @@
 footer{
-    border-top: 0.5px solid rgba(255,255,255,0.8);
+    height: var(--bar);
     display: grid;
-    grid-template-columns: 5rem auto 5rem;
+    grid-template-columns: var(--block) minmax(0, 1fr) var(--block);
+    border-top: 0.5px solid rgba(255,255,255,0.8);
     .data{
+        min-width: 0;
         border: 0.5px solid white;
-        border-top: none;
-        border-bottom: none;
-        height: 100%;
+        border-block: none;
         ul{
+            list-style: none;
             margin: 0;
+            padding: 0;
             height: 100%;
             display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(0, 1fr);
+        }
+        button{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 0 0.25rem;
+            background: none;
+            border: 0;
             color: white;
-            list-style-type: none;
-            grid-template-columns: repeat(4,1fr);
-            li{
-                text-transform: uppercase;
-                font-weight: 500;
-                letter-spacing: 0.2rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: 0.3s ease-in-out;
-                &:hover{
-                    background-color: var(--accent-color);
-                }
-            }
-            
-            .active{
-                background-color: var(--accent-color);
-            }
+            font: inherit;
+            font-size: clamp(0.6rem, 1.1vw, 1rem);
+            letter-spacing: clamp(0.04rem, 0.2vw, 0.2rem);
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            span{ position: relative; } // label sits above the sliding pill
+        }
+        .pill{
+            position: absolute;
+            inset: 0;
+            background-color: var(--accent-color);
         }
     }
     .block{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        img{
-            height: 3rem;
-        }
-        svg{
-            height: 2rem;
-            width: 2rem;
+        display: grid;
+        place-items: center;
+        .logout{
+            display: grid;
+            padding: 0.5rem;
+            background: none;
+            border: 0;
             color: red;
             cursor: pointer;
-
-            
+            svg{
+                height: 2rem;
+                width: 2rem;
+            }
         }
+    }
+}
+@media (hover: hover) {
+    footer .data button:hover{ background-color: color-mix(in srgb, var(--accent-color) 30%, transparent); }
+}
+// Phones: the tabs get the full width (log out lives in the nav menu), and pages without tabs drop the bar.
+@media (max-width: 640px) {
+    footer{
+        grid-template-columns: minmax(0, 1fr);
+        .block{ display: none; }
+        .data{ border: none; }
+        &:not(.has-tabs){ display: none; }
     }
 }

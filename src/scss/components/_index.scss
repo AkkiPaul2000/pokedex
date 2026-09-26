@@ -1,7 +1,7 @@
-@import 'background';
-@import "compare_container";
-@import "pokemon_card_grid";
-@import "login";
-@import "pokemon_container";
-@import "pokemonDetails";
-@import "loader"
+@use 'background';
+@use "compare_container";
+@use "pokemon_card_grid";
+@use "login";
+@use "pokemon_container";
+@use "pokemonDetails";
+@use "loader";

@@ -9,43 +9,26 @@ import { pokemonTypes } from "../../utils/pokemonTypes";
 
 export const getPokemonsData = createAsyncThunk(
   "pokemon/randomPokemon",
-  async (pokemons: genericPokemonType[], { dispatch }) => {
+  async (pokemons: genericPokemonType[], { dispatch, signal }) => {
+    dispatch(setLoading(true));
     try {
-      dispatch(setLoading(true));
-      const pokemonsData: generatedPokemonType[] = [];
-      for await (const pokemon of pokemons) {
-        const {
-          data,
-        }: {
-          data: {
-            id: number;
-            types: { type: genericPokemonType }[];
-          };
-        } = await axios.get(pokemon.url);
-        const types = data.types.map(
-          ({ type: { name } }: { type: { name: string } }) => ({
-            [name]: pokemonTypes[name],
-          })
-        );
-        let image: string = images[data.id];
-        if (!image) {
-          image = defaultImages[data.id];
-        }
-        if (image) {
-          pokemonsData.push({
+      const pokemonsData = await Promise.all(
+        pokemons.map(async (pokemon): Promise<generatedPokemonType | undefined> => {
+          const { data } = await axios.get(pokemon.url, { signal });
+          const image: string = images[data.id] || defaultImages[data.id];
+          if (!image) return undefined;
+          return {
             name: pokemon.name,
             id: data.id,
             image,
-            types,
-          });
-        }
-      }
-      dispatch(setLoading(false));
-      return pokemonsData;
-    } catch (err) {
-      dispatch(setLoading(false));
-      console.error(err);
-      throw err;
+            types: data.types.map(({ type: { name } }) => ({ [name]: pokemonTypes[name] })),
+          };
+        })
+      );
+      return pokemonsData.filter((pokemon) => pokemon !== undefined);
+    } finally {
+      // An aborted request was superseded; the newer one owns the loading flag.
+      if (!signal.aborted) dispatch(setLoading(false));
     }
   }
 );

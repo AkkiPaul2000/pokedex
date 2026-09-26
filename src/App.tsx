@@ -1,13 +1,11 @@
-import React, { Suspense, useEffect } from 'react';
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
+import { AnimatePresence, MotionConfig } from 'framer-motion';
 import Background from './components/Background';
 import './App.css';
-import Wrapper from './sections/Wrapper';
 import './scss/index.scss';
 import Navbar from './sections/Navbar';
 import Footer from './sections/Footer';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import "react-toastify/dist/ReactToastify.css";
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Search from './pages/Search';
 import { ToastContainer, ToastOptions, toast } from 'react-toastify';
 import About from './pages/About';
@@ -16,9 +14,9 @@ import Compare from './pages/Compare';
 import Pokemon from './pages/Pokemon';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { clearToasts, setUserStatus } from './app/slices/AppSlice';
+import { getUserPokemons } from './app/reducers/getUserPokemons';
 import { onAuthStateChanged } from 'firebase/auth';
 import { firebaseAuth } from './utils/FirebaseConfig';
-import Loader from './components/Loader';
 
 const toastOptions: ToastOptions = {
   position: "bottom-right",
@@ -29,16 +27,15 @@ const toastOptions: ToastOptions = {
 };
 
 function App() {
-  const { toasts } = useAppSelector(({ app }) => app);
+  const toasts = useAppSelector(({ app }) => app.toasts);
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
-      if (currentUser) {
-        dispatch(setUserStatus({ email: currentUser.email ?? '' }));
-      } else {
-        dispatch(setUserStatus(null));
-      }
+      dispatch(setUserStatus(currentUser ? { email: currentUser.email ?? '' } : null));
+      // Loaded once per sign-in, so every "Add" can see what's already saved.
+      dispatch(getUserPokemons());
     });
     return () => unsubscribe();
   }, [dispatch]);
@@ -53,13 +50,15 @@ function App() {
   }, [toasts, dispatch]);
 
   return (
-    <div className='main-container'>
-      <Background />
-      <BrowserRouter>
-        <Suspense fallback={<Loader />}>
-          <div className='app'>
-            <Navbar />
-            <Routes>
+    // reducedMotion="user": every framer animation honours the OS "reduce motion" setting.
+    <MotionConfig reducedMotion="user">
+      <div className='main-container'>
+        <Background />
+        <div className='app'>
+          <Navbar />
+          {/* Keyed by path so each page (and each Pokémon) animates out before the next animates in. */}
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
               <Route element={<Search />} path='/search' />
               <Route element={<About />} path='/about' />
               <Route element={<List />} path='/list' />
@@ -67,12 +66,12 @@ function App() {
               <Route element={<Pokemon />} path='/pokemon/:id' />
               <Route element={<Navigate to="/pokemon/1" />} path='*' />
             </Routes>
-            <Footer />
-            <ToastContainer />
-          </div>
-        </Suspense>
-      </BrowserRouter>
-    </div>
+          </AnimatePresence>
+          <Footer />
+          <ToastContainer />
+        </div>
+      </div>
+    </MotionConfig>
   );
 }
 

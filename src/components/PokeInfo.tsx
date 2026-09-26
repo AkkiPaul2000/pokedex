@@ -1,104 +1,87 @@
-import React, { useEffect } from "react";
-import { pokemonTypes } from "../utils";
-import { useAppDispatch } from "../app/hooks";
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaCheck, FaLock, FaPlus } from "react-icons/fa";
+import { defaultImages, images, pokemonTypes } from "../utils";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { addPokemonToList } from "../app/reducers/addPokemonToList";
 import { setPokemonTab } from "../app/slices/AppSlice";
 import { pokemonTabs } from "../utils/Constant";
-import { currentPokemonType, pokemonStatsType } from "../utils/Types";
+import { currentPokemonType, pokemonElementType, pokemonStatType } from "../utils/Types";
 
-export default function PokeInfo({
-  data,
-}: {
-  data: currentPokemonType | undefined;
-}) {
+const dexNumber = (id: number) => `#${String(id).padStart(3, "0")}`;
+const press = { whileHover: { y: -2 }, whileTap: { scale: 0.95 } };
+
+export default function PokeInfo({ data }: { data: currentPokemonType }) {
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    const progressBars = document.querySelectorAll("progress");
-    progressBars.forEach((progressBar) => {
-      progressBar.style.width = "10rem";
-    });
-  }, []);
-  const createStatsArray = (types: string[], statType: string) => {
-    const statsSet = new Set();
-    types.forEach((type: string) => {
-      // @ts-ignore
-      pokemonTypes[type][statType].forEach((stat: string) => {
-        if (!statsSet.has(stat)) {
-          statsSet.add(stat[0].toUpperCase() + stat.slice(1));
-        }
-      });
-    });
-    return Array.from(statsSet);
-  };
+  const guest = useAppSelector(({ app }) => !app.userInfo);
+  const inList = useAppSelector(({ pokemon }) => pokemon.userPokemons.some(({ id }) => id === data.id));
+  const matchups = (statType: pokemonStatType) =>
+    Array.from(new Set(data.types.flatMap((type) => pokemonTypes[type][statType])));
+  const typeRows: [string, string[]][] = [
+    ["Type", data.types],
+    ["Strengths", matchups("strength")],
+    ["Weakness", matchups("weakness")],
+    ["Resistant", matchups("resistance")],
+    ["Vulnerable", matchups("vulnerable")],
+  ];
+  const total = data.stats.reduce((sum, stat) => sum + Number(stat.value), 0);
+  // Only link neighbours we have art for; the local sprite set doubles as the id range.
+  const neighbours = [data.id - 1, data.id + 1].filter((id) => images[id] || defaultImages[id]);
+
   return (
     <>
       <div className="details">
-        <h1 className="name">{data?.name}</h1>
-        <h3>Type: {data?.types.join(" - ")}</h3>
-        <h3>Evolution: {data?.evolutionLevel}</h3>
-        <button onClick={() => dispatch(setPokemonTab(pokemonTabs.evolution))}>
-          See next evolution
-        </button>
-      </div>
-      <div className="stats">
-        <ul>
-          {data?.stats.map((stat: pokemonStatsType) => {
-            return (
-              <li key={stat.name}>
-                {stat.name}: {stat.value}
-                <progress max={100} value={stat.value} />
-              </li>
-            );
-          })}
+        <span className="number">{dexNumber(data.id)}</span>
+        <h1 className="name">{data.name}</h1>
+        {data.genus && <h4 className="genus">{data.genus}</h4>}
+        {data.description && <p className="description">{data.description}</p>}
+        <ul className="facts">
+          <li><span>Height</span>{data.height} m</li>
+          <li><span>Weight</span>{data.weight} kg</li>
+          {data.region && <li><span>Region</span>{data.region}</li>}
+          {data.evolutionLevel && <li><span>Evolution</span>Stage {data.evolutionLevel}</li>}
         </ul>
+        <div className="abilities">
+          {data.pokemonAbilities.abilities.map((ability) => <span key={ability}>{ability}</span>)}
+        </div>
+        <motion.button {...press} onClick={() => dispatch(setPokemonTab(pokemonTabs.evolution))}>
+          See evolution
+        </motion.button>
       </div>
       <div className="battle-stats">
-        {
-          <ul>
-            <li>
-              <span>Strengths:</span>
-              <span>
-                {createStatsArray(
-                  data?.types as unknown as string[],
-                  "strength"
-                ).join(", ")}
-              </span>
-            </li>
-            <li>
-              <span>Weakness:</span>
-              <span>
-                {createStatsArray(
-                  data?.types as unknown as string[],
-                  "weakness"
-                ).join(", ")}
-              </span>
-            </li>
-            <li>
-              <span>Resistant:</span>
-              <span>
-                {createStatsArray(
-                  data?.types as unknown as string[],
-                  "resistance"
-                ).join(", ")}
-              </span>
-            </li>
-            <li>
-              <span>Vulnerable:</span>
-              <span>
-                {createStatsArray(
-                  data?.types as unknown as string[],
-                  "vulnerable"
-                ).join(", ")}
-              </span>
-            </li>
-          </ul>
-        }
-        <button
-          onClick={() => dispatch(addPokemonToList(data!))}
-          className="add-pokemon"
-        >
-          Add Pokemon
-        </button>
+        {typeRows.map(([label, types]) => (
+          <div className="type-row" key={label}>
+            <h4>{label}</h4>
+            <div className="type-icons">
+              {types.map((type) => (
+                <img key={type} src={pokemonTypes[type as pokemonElementType].image} alt={type} title={type} />
+              ))}
+            </div>
+          </div>
+        ))}
+        <motion.button {...press} onClick={() => dispatch(addPokemonToList(data))}
+          className={`add-pokemon${inList ? " done" : ""}`} title={guest ? "Log in to add to your list" : undefined}>
+          {guest ? <FaLock /> : inList ? <FaCheck /> : <FaPlus />} {inList ? "In your list" : "Add Pokemon"}
+        </motion.button>
+      </div>
+      <ul className="stats">
+        <li className="stats-title"><span>Base stats</span><b>{total}</b></li>
+        {data.stats.map((stat) => (
+          <li key={stat.name} style={{ "--v": stat.value } as React.CSSProperties}>
+            <span>{stat.name.replace("special-", "sp. ")}</span>
+            <b>{stat.value}</b>
+            <i />
+          </li>
+        ))}
+      </ul>
+      <div className="poke-nav">
+        {neighbours.map((id) => (
+          <Link key={id} to={`/pokemon/${id}`} className={id < data.id ? "prev" : "next"}>
+            <img src={images[id] || defaultImages[id]} alt="" />
+            {dexNumber(id)}
+          </Link>
+        ))}
       </div>
     </>
   );

@@ -1,19 +1,14 @@
 // @ts-nocheck
 import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import Wrapper from "../sections/Wrapper";
 import { useParams } from "react-router-dom";
-import { extractColors } from "extract-colors";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { setCurrentPokemon } from "../app/slices/PokemonSlice";
 import { setPokemonTab } from "../app/slices/AppSlice";
 import Loader from "../components/Loader";
-import {
-  PokemonSpeciesRoute,
-  pokemonRoute,
-  pokemonSpeciesRoute,
-  pokemonTabs,
-} from "../utils/Constant";
+import { pokemonRoute, pokemonTabs, regions } from "../utils/Constant";
 import Description from "./PokemonPages/Description";
 import Evolution from "./PokemonPages/Evolution";
 import CapableMoves from "./PokemonPages/CapableMoves";
@@ -75,48 +70,41 @@ function Pokemon() {
 
   const [isDataLoading, setIsDataLoading] = useState(true);
   const getPokemonInfo = useCallback(
-    async (image) => {
-      const { data } = await axios.get(`${pokemonRoute}/${params.id}`);
-      const { data: dataEncounters } = await axios.get(
-        data.location_area_encounters
-      );
-      const {
-        data: {
-          evolution_chain: { url: evolutionURL },
-        },
-      } = await axios.get(`${PokemonSpeciesRoute}/${data.id}`);
-      const { data: evolutionData } = await axios.get(evolutionURL);
+    async (image, signal) => {
+      const { data } = await axios.get(`${pokemonRoute}/${params.id}`, { signal });
+      // species.url, not /pokemon-species/{id}: form ids (10001+) have no species of their own.
+      const [{ data: dataEncounters }, { data: species }] = await Promise.all([
+        axios.get(data.location_area_encounters, { signal }),
+        axios.get(data.species.url, { signal }),
+      ]);
+      const { data: evolutionData } = await axios.get(species.evolution_chain.url, { signal });
       const pokemonAbilities = {
         abilities: data.abilities.map(({ ability }) => ability.name),
         moves: data.moves.map(({ move }) => move.name),
       };
-
-      const encounters = [];
       const evolution = getEvolutionData(evolutionData.chain);
-      let evolutionLevel;
-      evolutionLevel = evolution.find(
-        ({ pokemon }) => pokemon.name === data.name
-      ).level;
-      dataEncounters.forEach((encounter) => {
-        encounters.push(
-          encounter.location_area.name.toUpperCase().split("-").join(" ")
-        );
-      });
-      const stats = await data.stats.map(({ stat, base_stat }) => ({
-        name: stat.name,
-        value: base_stat,
-      }));
+      const english = ({ language }) => language.name === "en";
+      const types = data.types.map(({ type: { name } }) => name);
+      document.documentElement.dataset.type = types[0]; // drives --accent-color
       dispatch(
         setCurrentPokemon({
           id: data.id,
           name: data.name,
-          types: data.types.map(({ type: { name } }) => name),
+          types,
           image,
-          stats,
-          encounters,
-          evolutionLevel,
+          stats: data.stats.map(({ stat, base_stat }) => ({ name: stat.name, value: base_stat })),
+          encounters: dataEncounters.map((encounter) =>
+            encounter.location_area.name.toUpperCase().split("-").join(" ")
+          ),
+          evolutionLevel: evolution.find(({ pokemon }) => pokemon.name === species.name)?.level,
           evolution,
           pokemonAbilities,
+          height: data.height / 10,
+          weight: data.weight / 10,
+          genus: species.genera.find(english)?.genus,
+          description: species.flavor_text_entries.find(english)?.flavor_text.replace(/\s+/g, " "),
+          japaneseName: species.names.find(({ language }) => language.name === "ja-hrkt")?.name,
+          region: regions[species.generation.name.split("-")[1]],
         })
       );
       setIsDataLoading(false);
@@ -125,45 +113,32 @@ function Pokemon() {
   );
 
   useEffect(() => {
-    const imageElemet = document.createElement("img");
-    imageElemet.src = images[params.id];
-    const options = {
-      pixels: 10000,
-      distance: 1,
-      splitPower: 10,
-      colorValidator: (red, green, blue, alpha = 255) => alpha > 250,
-      saturationDistance: 0.2,
-      lightnessDistance: 0.2,
-      hueDistance: 0.083333333,
-    };
-    const getColor = async () => {
-      const color = await extractColors(imageElemet.src, options);
-      const root = document.documentElement;
-      root.style.setProperty("--accent-color", color[0].hex.split('"')[0]);
-    };
-    getColor();
-    let image = images[params.id];
-    if (!image) {
-      image = defaultImages[params.id];
-    }
-    console.log(images[params.id])
-    getPokemonInfo(image);
+    // Abort on id change so a slow response for the previous Pokémon can't land last.
+    const controller = new AbortController();
+    getPokemonInfo(images[params.id] || defaultImages[params.id], controller.signal).catch(
+      (err) => axios.isCancel(err) || console.error(err)
+    );
+    return () => controller.abort();
   }, [params.id, getPokemonInfo]);
 
-  return (
-    <>
-      {!isDataLoading && currentPokemon ? (
-        <>
-        {console.log(params)}
-          {currentPokemonTab === pokemonTabs.description && <Description />}
-          {currentPokemonTab === pokemonTabs.evolution && <Evolution />}
-          {currentPokemonTab === pokemonTabs.locations && <Locations/>}
-          {currentPokemonTab === pokemonTabs.moves && <CapableMoves />}
-        </>
-       ) : (
-        <Loader />
-      )}
-    </>
+  return !isDataLoading && currentPokemon ? (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={currentPokemonTab}
+        className="tab"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -12 }}
+        transition={{ duration: 0.18 }}
+      >
+        {currentPokemonTab === pokemonTabs.description && <Description key={currentPokemon.id} />}
+        {currentPokemonTab === pokemonTabs.evolution && <Evolution />}
+        {currentPokemonTab === pokemonTabs.locations && <Locations/>}
+        {currentPokemonTab === pokemonTabs.moves && <CapableMoves />}
+      </motion.div>
+    </AnimatePresence>
+  ) : (
+    <Loader />
   );
 }
 

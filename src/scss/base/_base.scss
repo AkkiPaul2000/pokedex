@@ -1,7 +1,6 @@
-// main-component{
-//     background-color: black;
-// }
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Tilt+Warp&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
 
 body{
     margin: 0;
@@ -11,13 +10,52 @@ body{
     color:white
 }
 
-// *{
-//     margin: 0;
-//     padding: 0;
-//     box-sizing: border-box;
-//     font-family: "raleway",sans-serif;
-// }
-.page{
+.page, .tab{
     height: 100%;
     width: 100%;
+}
+
+// Official type colours. `data-type` on <html> (current Pokémon) sets the accent; on a card it tints just that card.
+$type-colors: (
+    normal: #a8a77a, fire: #ee8130, water: #6390f0, electric: #f7d02c,
+    grass: #7ac74c, ice: #96d9d6, fighting: #c22e28, poison: #a33ea1,
+    ground: #e2bf65, flying: #a98ff3, psychic: #f95587, bug: #a6b91a,
+    rock: #b6a136, ghost: #735797, dragon: #6f35fc, dark: #705746,
+    steel: #b7b7ce, fairy: #d685ad,
+);
+@each $name, $color in $type-colors {
+    [data-type="#{$name}"] { --type: #{$color}; }
+}
+
+// --bar: nav/footer height. --block: their side columns. --gutter: the page's side margin.
+// Block and gutter match so the frame lines line up; on phones the page goes full-bleed.
+:root {
+    --accent-color: var(--type, #e3350d);
+    --bar: clamp(3.75rem, 10vh, 5.5rem);
+    --block: 5rem;
+    --gutter: 5rem;
+}
+@media (max-width: 1024px) { :root { --block: 3.5rem; --gutter: 3.5rem; } }
+@media (max-width: 640px) { :root { --bar: 3.5rem; --gutter: 0rem; } }
+
+// No transform at rest: a resting 3D transform promoted every .tilt element (each card, move,
+// location) to its own GPU layer. Tilt only on real hover; index.tsx feeds --rx/--ry.
+.tilt {
+    transform-style: preserve-3d;
+    transition: transform 0.25s ease-out;
+}
+@media (hover: hover) {
+    .tilt:hover { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+}
+
+@keyframes float { 50% { translate: 0 -14px; } }
+@keyframes spin { to { rotate: 360deg; } }
+@keyframes grow { from { transform: scaleX(0); } }
+
+// Ambient motion only (framer animations follow MotionConfig reducedMotion="user"). Never a blanket
+// `*` rule: react-toastify closes toasts on its progress bar's animationend, so killing every
+// animation leaves toasts up forever. Hover tilt stays: it only moves when the user moves the pointer.
+@media (prefers-reduced-motion: reduce) {
+    .pokemon-card:hover .pokemon-card-image, .circle-container > img,
+    .lines, .background img, .pokemon-detail .stats i::before { animation: none !important; }
 }

@@ -1,37 +1,54 @@
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import React from 'react'
 import {FcGoogle} from "react-icons/fc"
-import { firebaseAuth, firebaseDB, usersRef } from '../utils/FirebaseConfig';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { motion } from 'framer-motion';
+import { firebaseAuth, usersRef } from '../utils/FirebaseConfig';
+import { addDoc, getDocs, query, where } from 'firebase/firestore';
 import { useAppDispatch } from '../app/hooks';
-import { setUserStatus } from '../app/slices/AppSlice';
-function Login() {
-  const dispatch = useAppDispatch();
+import { setToast, setUserStatus } from '../app/slices/AppSlice';
+import type { Dispatch } from '@reduxjs/toolkit';
 
-  const handleLogin = async () => {
-    const provider = new GoogleAuthProvider();
+// Closing the popup or clicking twice is the user changing their mind, not an error.
+const cancelled = ['auth/popup-closed-by-user', 'auth/cancelled-popup-request', 'auth/user-cancelled'];
+
+// Thunks that never read state, so any dispatch (components or other thunks) can run them.
+// Dispatch login straight from a click handler: the popup must open inside the user's gesture.
+export const login = () => async (dispatch: Dispatch) => {
+  try {
     const {
       user: { email, uid },
-    } = await signInWithPopup(firebaseAuth, provider);
+    } = await signInWithPopup(firebaseAuth, new GoogleAuthProvider());
+    if (!email) return;
+    dispatch(setUserStatus({ email }));
+    // Profile record only; the session is already live, so a failure here is just logged.
+    getDocs(query(usersRef, where("uid", "==", uid)))
+      .then((found) => { if (found.empty) return addDoc(usersRef, { uid, email }); })
+      .catch(console.error);
+  } catch (err) {
+    const code = (err as { code?: string }).code ?? '';
+    if (cancelled.includes(code)) return;
+    console.error(err);
+    dispatch(setToast(code === 'auth/popup-blocked'
+      ? 'Pop-up blocked. Allow pop-ups for this site to log in.'
+      : 'Login failed. Please try again.'));
+  }
+};
 
-    if (email) {
-      const firestoreQuery = query(usersRef, where("uid", "==", uid));
-      const fetchedUser = await getDocs(firestoreQuery);
-      if (fetchedUser.docs.length === 0) {
-        await addDoc(collection(firebaseDB, "users"), {
-          uid,
-          email,
-        });
-      }
-      dispatch(setUserStatus({ email }));
-    }
-  };
+export const logout = () => (dispatch: Dispatch) =>
+  signOut(firebaseAuth)
+    .then(() => {
+      dispatch(setUserStatus(null));
+      dispatch(setToast("Logged out successfully!"));
+    })
+    .catch(() => dispatch(setToast("Logout failed. Please try again.")));
 
+function Login() {
+  const dispatch = useAppDispatch();
   return (
     <div className="login">
-      <button onClick={handleLogin} className="login-btn">
+      <motion.button whileTap={{ scale: 0.95 }} onClick={() => dispatch(login())} className="login-btn">
         <FcGoogle /> Login with Google
-      </button>
+      </motion.button>
     </div>
   );
 }

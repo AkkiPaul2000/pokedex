@@ -1,5 +1,5 @@
 //@ts-nocheck
-const fetchImages=(context:string)=>{
+const fetchImages=(context:string):Record<string,string>=>{
     const images={};
     const cache={}
     function importAll(r){

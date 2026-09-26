@@ -1,54 +1,37 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "../store";
-import { pokemonListRef } from "../../utils/FirebaseConfig";
 import { getDocs, query, where } from "firebase/firestore";
-import { userPokemonType } from "../../utils/Types";
+import type { RootState } from "../store";
+import { pokemonListRef } from "../../utils/FirebaseConfig";
+import { pokemonElementType, userPokemonType } from "../../utils/Types";
 import { defaultImages, images } from "../../utils/pokemonImage";
 import { pokemonTypes } from "../../utils/pokemonTypes";
+import { setToast } from "../slices/AppSlice";
 
-export const getUserPokemons=createAsyncThunk(
-    "pokemon/userList",
-    async (args, { getState }) => {
-      try {
-        const {
-          app: { userInfo },
-        } = getState() as RootState;
-        if (!userInfo?.email) {
-          return;
-        }
-        const firestoreQuery = query(
-          pokemonListRef,
-          where("email", "==", userInfo?.email)
-        );
-        const fetchedPokemons = await getDocs(firestoreQuery);
-        if (fetchedPokemons.docs.length) {
-          const userPokemons: userPokemonType[] = [];
-          fetchedPokemons.forEach(async (pokemon) => {
-            const pokemons = await pokemon.data().pokemon;
-            // @ts-ignore
-            let image = images[pokemons.id];
-            if (!image) {
-              // @ts-ignore
-              image = defaultImages[pokemons.id];
-            }
-            const types = pokemons.types.map((name: string) => ({
-              // @ts-ignore
-              [name]: pokemonTypes[name],
-            }));
-  
-            userPokemons.push({
-              ...pokemons,
-              firebaseId: pokemon.id,
-              image,
-              types,
-            });
-          });
-          return userPokemons;
-        }
-        return [];
-      } catch (err) {
-        console.log(err);
-      }
+// Firestore stores { id, name, types: string[] }; cards need the sprite and type details.
+export const toUserPokemon = (
+  { id, name, types }: { id: number; name: string; types: string[] },
+  firebaseId: string
+): userPokemonType => ({
+  id,
+  name,
+  firebaseId,
+  image: images[id] || defaultImages[id],
+  types: types.map((type) => ({ [type]: pokemonTypes[type as pokemonElementType] })),
+});
+
+// Always resolves to an array: a logged-out user simply has an empty list. On failure the
+// thunk rejects, so the slice keeps its current (array) value instead of storing undefined.
+export const getUserPokemons = createAsyncThunk(
+  "pokemon/userList",
+  async (_, { getState, dispatch }) => {
+    const email = (getState() as RootState).app.userInfo?.email;
+    if (!email) return [];
+    try {
+      const { docs } = await getDocs(query(pokemonListRef, where("email", "==", email)));
+      return docs.map((doc) => toUserPokemon(doc.data().pokemon, doc.id));
+    } catch (err) {
+      dispatch(setToast(`Couldn't load your list: ${(err as Error).message}`));
+      throw err;
     }
-  );
-  
+  }
+);

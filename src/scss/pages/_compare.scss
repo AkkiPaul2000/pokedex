@@ -1,10 +1,9 @@
+// Side by side while each slot gets 22rem; stacked (and scrolling) below that.
 .compare{
-    // background-color: red;
     display: grid;
-    grid-template-columns: 49% 49%;
-    height: 100%;
-    width: 100%;
-    gap:1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 1rem;
     padding: 1rem;
-
+    height: 100%;
+    overflow-y: auto;
 }
