@@ -4,12 +4,12 @@ import pokeball2 from '../assets/pokeball2.png'
 function Background() {
   return (
     <div className='background'>
-        <img src={pokeball1} className='pokemon pokemon1' />
-        <img src={pokeball2} className='pokemon pokemon2' />
-        <img src={pokeball1} className='pokemon pokemon3' />
-        <img src={pokeball2} className='pokemon pokemon4' />
-        <img src={pokeball1} className='pokemon pokemon5' />
-        <img src={pokeball2} className='pokemon pokemon6' />
+        <img src={pokeball1} className='pokemon pokemon1' alt='' />
+        <img src={pokeball2} className='pokemon pokemon2' alt='' />
+        <img src={pokeball1} className='pokemon pokemon3' alt='' />
+        <img src={pokeball2} className='pokemon pokemon4' alt='' />
+        <img src={pokeball1} className='pokemon pokemon5' alt='' />
+        <img src={pokeball2} className='pokemon pokemon6' alt='' />
     </div>
   )
 }

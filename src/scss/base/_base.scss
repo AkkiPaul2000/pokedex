@@ -57,5 +57,5 @@ $type-colors: (
 // animation leaves toasts up forever. Hover tilt stays: it only moves when the user moves the pointer.
 @media (prefers-reduced-motion: reduce) {
     .pokemon-card:hover .pokemon-card-image, .circle-container > img,
-    .lines, .background img, .pokemon-detail .stats i::before { animation: none !important; }
+    .floor img, .background img, .pokemon-detail .stats i::before { animation: none !important; }
 }

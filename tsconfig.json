@@ -18,7 +18,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    // ponytail: TS 6 shims for react-scripts (it forces moduleResolution=node, and plain .css imports have no types). TS 7 drops ignoreDeprecations; getting there means leaving CRA.
+    "ignoreDeprecations": "6.0",
+    "noUncheckedSideEffectImports": false
   },
   "include": [
     "src"

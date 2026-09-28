@@ -1,11 +1,11 @@
-// 3D stage: the old rings are laid flat as a spinning floor, the Pokémon floats above it.
+// 3D stage: the loader's Poké Ball is laid flat as a spinning floor, the Pokémon floats above it.
 .circle-container{
     grid-area: stage;
     position: relative;
     display: grid;
     place-items: center;
     min-height: clamp(15rem, 62vw, 25rem);
-    // The one .tilt that keeps a resting 3D transform: its floor ring and floating sprite need the perspective.
+    // The one .tilt that keeps a resting 3D transform: its floor and floating sprite need the perspective.
     transform: perspective(900px);
     > img{
         position: relative;
@@ -16,41 +16,23 @@
             drop-shadow(0 30px 25px rgba(0,0,0,0.55))
             drop-shadow(0 0 40px color-mix(in srgb, var(--accent-color) 45%, transparent));
     }
-    .outer-circle{
+    .floor{
         position: absolute;
         bottom: 0;
-        display: grid;
-        place-items: center;
         width: min(22rem, 100%);
-        aspect-ratio: 1;
-        border: 0.2rem solid var(--accent-color);
         border-radius: 50%;
         transform-origin: 50% 100%;
         transform: rotateX(78deg);
-        background: radial-gradient(circle, color-mix(in srgb, var(--accent-color) 40%, transparent), transparent 70%);
-        box-shadow: 0 0 40px var(--accent-color), inset 0 0 40px var(--accent-color);
-        .inner-circle{
-            height: 75%;
-            width: 75%;
-            border: 0.3rem solid var(--accent-color);
-            border-radius: 50%;
+        box-shadow: 0 0 40px var(--accent-color);
+        // Spins in its own plane; the floor's tilt then lays it flat.
+        img{
+            display: block;
+            width: 100%;
+            animation: spin 6s linear infinite;
         }
     }
 }
 // Phones: leave room for the translateZ zoom (~1.1x) so the sprite isn't clipped at the screen edges.
 @media (max-width: 640px) {
     .circle-container > img{ width: min(22rem, 78vw); }
-}
-.lines{
-    display: flex;
-    gap:3rem;
-    position: absolute;
-    height: 90%;
-    animation: spin 14s linear infinite;
-    .line{
-        height: 100%;
-        width: 0.2rem;
-        background-color: var(--accent-color);
-        transform: rotate(45deg);
-    }
 }

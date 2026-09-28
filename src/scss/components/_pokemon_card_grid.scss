@@ -50,7 +50,9 @@
         background-size: 100% 100%, 250% 250%;
         background-position: 0 0, var(--mx, 50%) var(--my, 50%);
         opacity: 0;
-        transition: opacity 0.3s;
+        // Keep the blend until the fade-out ends; dropping it at once flashes a flat white glare.
+        // One shorthand on purpose: the minifier reorders a separate transition-behavior above it.
+        transition: opacity 0.3s, mix-blend-mode 0s 0.3s allow-discrete;
     }
     &-link{
         width: 100%;
@@ -92,8 +94,9 @@
         // On hover the sprite pops out over the card's top half; it must never swallow a click.
         pointer-events: none;
         filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.5));
-        // Overshoot easing gives the pop-out its spring.
-        transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.45s;
+        // Settling back must not overshoot: past rest, translateZ goes negative and the sprite sinks
+        // behind the card's own background (preserve-3d), vanishing until the spring settles.
+        transition: transform 0.45s ease-out, filter 0.45s;
     }
     &-types{
         width: 100%;
@@ -166,7 +169,7 @@
         transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.06);
         box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55), 0 0 45px color-mix(in srgb, var(--type) 55%, transparent);
         // Blending only on the hovered card: on every card it cost a compositing pass per card.
-        &::after{ opacity: 1; mix-blend-mode: color-dodge; }
+        &::after{ opacity: 1; mix-blend-mode: color-dodge; transition: opacity 0.3s; }
         // The Pokémon springs up out of the card, past its top edge, and hovers there.
         .pokemon-card-image{
             transform: translateZ(90px) translateY(-75px) scale(1.5);
@@ -174,6 +177,8 @@
                 drop-shadow(0 25px 18px rgba(0, 0, 0, 0.55))
                 drop-shadow(0 0 22px color-mix(in srgb, var(--type) 70%, transparent));
             animation: float 2.4s ease-in-out 0.45s infinite;
+            // Overshoot easing gives the pop-out its spring (on the way out of the card only).
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.45s;
         }
         .pokemon-card-title{ transform: translateZ(40px); }
         .pokemon-card-types{ transform: translateZ(25px); }

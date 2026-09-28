@@ -1,4 +1,4 @@
-import { PayloadAction, configureStore, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppTypeInitialState } from "../../utils/Types";
 import { pokemonTabs } from "../../utils/Constant";
 
