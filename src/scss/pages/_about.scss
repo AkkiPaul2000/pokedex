@@ -9,6 +9,7 @@
     &-text{
         text-transform: uppercase;
         letter-spacing: 0.2rem;
+        a{ color: var(--volt); } // the browser's link blue vanished on the navy screen
 
     }
     h1{

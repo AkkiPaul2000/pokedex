@@ -1,0 +1,162 @@
+@use "sass:list";
+@use "sass:map";
+
+// Behind a Pokémon's page (Pokemon.tsx): its primary type's habitat, at dusk so the page's text still
+// reads. A sky, a layer of particles on the move and a landscape along the bottom, everything moving
+// by transform or opacity so the compositor animates it without repainting.
+
+// Particle layers, drawn in --fx on a 160px tile scattered enough not to read as a grid (moving by
+// one tile loops seamlessly).
+$arts: (
+    dots: (
+        radial-gradient(circle at 7% 12%, var(--fx) 0 1.6px, transparent 2.4px),
+        radial-gradient(circle at 31% 4%, var(--fx) 0 1.1px, transparent 1.9px),
+        radial-gradient(circle at 52% 27%, var(--fx) 0 2.2px, transparent 3.0px),
+        radial-gradient(circle at 78% 9%, var(--fx) 0 1.4px, transparent 2.2px),
+        radial-gradient(circle at 91% 41%, var(--fx) 0 1.8px, transparent 2.6px),
+        radial-gradient(circle at 18% 55%, var(--fx) 0 2.4px, transparent 3.2px),
+        radial-gradient(circle at 44% 72%, var(--fx) 0 1.2px, transparent 2.0px),
+        radial-gradient(circle at 67% 88%, var(--fx) 0 2px, transparent 2.8px),
+        radial-gradient(circle at 84% 66%, var(--fx) 0 1.1px, transparent 1.9px),
+        radial-gradient(circle at 5% 90%, var(--fx) 0 1.5px, transparent 2.3px),
+    ),
+    bubbles: (
+        radial-gradient(circle at 14% 20%, transparent 0 6px, var(--fx) 6.5px 7.8px, transparent 8.4px),
+        radial-gradient(circle at 63% 12%, transparent 0 3.5px, var(--fx) 4.0px 5.3px, transparent 5.9px),
+        radial-gradient(circle at 40% 48%, transparent 0 4.5px, var(--fx) 5.0px 6.3px, transparent 6.9px),
+        radial-gradient(circle at 86% 56%, transparent 0 7px, var(--fx) 7.5px 8.8px, transparent 9.4px),
+        radial-gradient(circle at 22% 80%, transparent 0 3px, var(--fx) 3.5px 4.8px, transparent 5.4px),
+        radial-gradient(circle at 70% 90%, transparent 0 5px, var(--fx) 5.5px 6.8px, transparent 7.4px),
+    ),
+    rays: repeating-conic-gradient(var(--fx) 0 5deg, transparent 5deg 15deg),
+    hypno: (
+        repeating-radial-gradient(circle, transparent 0 30px, var(--fx) 30px 34px),
+        repeating-conic-gradient(var(--fx) 0 3deg, transparent 3deg 20deg),
+    ),
+    sheen: linear-gradient(110deg, transparent 40%, var(--fx) 50%, transparent 60%),
+);
+
+// Landscape silhouettes, used as masks on a 3:1 tile (viewBox 120×40).
+$lands: (
+    waves: "M0 18Q15 8 30 18T60 18T90 18T120 18V40H0Z",
+    dunes: "M0 26C20 14 40 14 60 24S100 34 120 26V40H0Z",
+    peaks: "M0 30L14 18L22 24L36 8L50 26L60 20L74 30L86 14L98 24L108 18L120 30V40H0Z",
+    clouds: "M0 30Q0 22 8 22Q10 12 22 14Q28 6 40 12Q50 10 52 20Q60 18 62 24Q70 16 80 20Q88 12 98 18Q108 16 110 24Q120 24 120 30V40H0Z",
+    city: "M0 40V24H10V14H18V22H28V8H36V20H44V16H54V26H62V12H72V22H80V6H88V18H98V14H106V24H120V40Z",
+    grass: "M0 40V32L3 14L6 32L9 22L12 32L15 10L18 32L21 18L24 32L27 26L30 32L33 12L36 32L39 20L42 32L45 8L48 32L51 16L54 32L57 24L60 32L63 11L66 32L69 19L72 32L75 7L78 32L81 15L84 32L87 23L90 32L93 13L96 32L99 21L102 32L105 9L108 32L111 17L114 32L117 25L120 32V40Z",
+    flames: "M0 40V30Q2 24 6 10Q10 24 12 30Q14 21 18 4Q22 21 24 30Q26 26 30 14Q34 26 36 30Q38 22 42 6Q46 22 48 30Q50 25 54 12Q58 25 60 30Q62 20 66 2Q70 20 72 30Q74 27 78 16Q82 27 84 30Q86 23 90 8Q94 23 96 30Q98 25 102 12Q106 25 108 30Q110 21 114 5Q118 21 120 30V40Z",
+);
+// How each landscape moves, if at all.
+$land-motion: (
+    waves: scene-roll 7s linear,
+    clouds: scene-roll 30s linear,
+    flames: scene-blaze 0.9s ease-in-out,
+    grass: scene-sway 3.5s ease-in-out,
+);
+
+// Per type: sky, horizon, particles (colour, art, motion, seconds per loop), landscape (shape, colour).
+$scenes: (
+    normal:   (#ecebd8, #8a8966, rgba(255, 255, 255, 0.55), dots, scene-fall, 20s, dunes, #a8a77a),
+    fire:     (#ff9a3c, #c2260b, #ffd27a, dots, scene-rise, 3.5s, flames, #ff7a1a),
+    water:    (#8fd8ff, #1f64cf, rgba(255, 255, 255, 0.75), bubbles, scene-rise, 9s, waves, #3d8cf0),
+    electric: (#fff3a3, #d9a300, #fffbe0, dots, scene-twinkle, 0.9s, peaks, #f7d02c),
+    grass:    (#d2f5a0, #3f9a2e, #eaffcf, dots, scene-fall, 12s, grass, #5cb247),
+    ice:      (#f3fdff, #6fc6d1, #ffffff, dots, scene-fall, 7s, peaks, #d8f6fa),
+    fighting: (#ffb49c, #b82a22, rgba(255, 255, 255, 0.16), rays, spin, 28s, none, none),
+    poison:   (#e6b3f5, #8a36a0, rgba(248, 220, 255, 0.75), bubbles, scene-rise, 6s, waves, #a33ea1),
+    ground:   (#ffe2a3, #c28a42, #fff1cc, dots, scene-drift, 8s, dunes, #d9a55a),
+    flying:   (#dff3ff, #6fa8f2, rgba(255, 255, 255, 0.85), dots, scene-drift, 12s, clouds, #eaf5ff),
+    psychic:  (#ffcfe4, #d94f92, rgba(255, 255, 255, 0.13), hypno, spin, 18s, none, none),
+    bug:      (#eef8a6, #879e14, #fcffcf, dots, scene-rise, 10s, grass, #a6b91a),
+    rock:     (#eee3bc, #a0892f, #fff6d8, dots, scene-fall, 24s, peaks, #b6a136),
+    ghost:    (#cfbfff, #45327f, #ece4ff, bubbles, scene-rise, 12s, peaks, #735797),
+    dragon:   (#c9b3ff, #5a2ae0, rgba(255, 255, 255, 0.18), rays, spin, 40s, peaks, #6f35fc),
+    dark:     (#6e5b73, #19121f, #fff5cf, dots, scene-twinkle, 3s, peaks, #4a3a52),
+    steel:    (#f2f3fb, #8f92ae, rgba(255, 255, 255, 0.45), sheen, scene-sweep, 4s, city, #b7b7ce),
+    fairy:    (#ffe9f4, #e890bc, #ffffff, dots, scene-twinkle, 2.2s, clouds, #ffd9ec),
+);
+
+.scene{
+    container-type: size; // lets the spinning layer size itself to the scene
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background: linear-gradient(color-mix(in srgb, var(--sky) 35%, var(--screen)), color-mix(in srgb, var(--deep) 50%, var(--screen)));
+    &::before, &::after{
+        content: "";
+        position: absolute;
+        animation-iteration-count: infinite;
+    }
+    // Particles: a tile's slack on every side, for rising, falling and drifting.
+    &::before{
+        inset: -160px;
+        background-size: 160px 160px;
+        opacity: 0.6;
+        animation-timing-function: linear;
+    }
+    // Landscape: silhouettes repeated along the bottom, with one tile of slack to roll into.
+    &::after{
+        --tile: 24rem;
+        display: none;
+        bottom: 0;
+        left: 0;
+        width: calc(100% + var(--tile));
+        height: calc(var(--tile) / 3);
+        // lit at the tips in the landscape's colour, sinking into the dark (flames glow, waves crest)
+        background: linear-gradient(color-mix(in srgb, var(--land) 80%, var(--screen)), color-mix(in srgb, var(--deep) 40%, var(--screen)) 90%);
+        mask-size: var(--tile) 100%;
+        mask-repeat: repeat-x;
+        transform-origin: bottom;
+    }
+    // Rays and swirls spin about the middle, on a square just big enough (√2 × the longer side) to cover
+    // the corners at any angle.
+    &:is([data-type="fighting"], [data-type="psychic"], [data-type="dragon"])::before{
+        inset: auto;
+        top: 50%;
+        left: 50%;
+        width: 142cqmax;
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        background-size: 100% 100%;
+    }
+    // Steel's glint sweeps across.
+    &[data-type="steel"]::before{
+        inset: 0;
+        background-size: 100% 100%;
+    }
+}
+@each $type, $s in $scenes {
+    $land: list.nth($s, 7);
+    .scene[data-type="#{$type}"]{
+        --sky: #{list.nth($s, 1)};
+        --deep: #{list.nth($s, 2)};
+        --fx: #{list.nth($s, 3)};
+        &::before{
+            background-image: map.get($arts, list.nth($s, 4));
+            animation-name: list.nth($s, 5);
+            animation-duration: list.nth($s, 6);
+        }
+        @if $land != none {
+            --land: #{list.nth($s, 8)};
+            &::after{
+                display: block;
+                mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40' preserveAspectRatio='none'%3E%3Cpath d='#{map.get($lands, $land)}'/%3E%3C/svg%3E");
+                @if map.has-key($land-motion, $land) {
+                    animation: map.get($land-motion, $land) infinite;
+                }
+            }
+        }
+    }
+}
+@keyframes scene-rise { to { transform: translateY(-160px); } }
+@keyframes scene-fall { from { transform: translateY(-160px); } }
+@keyframes scene-drift { to { transform: translateX(-160px); } }
+@keyframes scene-twinkle { 50% { opacity: 0.2; } }
+@keyframes scene-sweep { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes scene-roll { to { transform: translateX(calc(-1 * var(--tile))); } }
+@keyframes scene-sway { 50% { transform: skewX(4deg); } }
+@keyframes scene-blaze { 50% { transform: scaleY(1.2); } }
+@media (max-width: 640px) {
+    .scene::after{ --tile: 15rem; }
+}

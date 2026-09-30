@@ -1,27 +1,27 @@
+// Top of the casing: the lens (left block), the pages in a recessed slot, a speaker grille (right block).
 nav{
     position: relative;
-    z-index: 5; // the mobile menu drops over the page
+    z-index: 5; // the mobile menu drops over the screen
     height: var(--bar);
     display: grid;
     grid-template-columns: var(--block) minmax(0, 1fr) var(--block);
-    border-bottom: 0.5px solid rgba(255,255,255,0.8);
+    align-items: center;
     .block{
+        height: 100%;
         display: grid;
         place-items: center;
-        img{
-            // No % here: in this auto-sized row it is cyclic, and the row grows to the PNG's 512px.
-            height: min(3rem, calc(var(--bar) - 1.5rem));
-        }
     }
-    .data {
+    .data{
         min-width: 0;
-        border: 0.5px solid rgba(255,255,255,0.8);
-        border-block: 0;
+        height: calc(100% - 2 * var(--slot-gap));
+        border-radius: var(--pill);
+        background: var(--screen);
+        box-shadow: var(--slot);
     }
     .links{
         list-style: none;
         margin: 0;
-        padding: 0 1rem;
+        padding: 0.3rem;
         height: 100%;
         display: grid;
         grid-auto-flow: column;
@@ -29,64 +29,103 @@ nav{
         li{ display: flex; }
         a{
             position: relative;
+            isolation: isolate; // .pill slides behind the label
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
+            border-radius: var(--pill);
+            color: var(--cream);
             text-decoration: none;
             text-transform: uppercase;
             white-space: nowrap;
-            font-size: clamp(0.78rem, 1.1vw, 1rem);
+            font-size: clamp(0.72rem, 1vw, 0.95rem);
             letter-spacing: clamp(0.08rem, 0.2vw, 0.2rem);
-            opacity: 0.75;
-            transition: opacity 0.2s;
-            &:hover, &.active{ opacity: 1; }
+            opacity: 0.7;
+            transition: opacity 0.2s, background-color 0.2s;
+            &.active{ opacity: 1; color: var(--on-accent); }
         }
     }
-    // Rendered inside the active link, so it is centred under it by construction.
-    .underline{
-        position: absolute;
-        left: 18%;
-        right: 18%;
-        bottom: -1px;
-        height: 2px;
-        border-radius: 2px;
-        background-color: white;
-    }
     .current{ display: none; }
+    // Speaker holes, where phones put the menu button (dots, not lines: lines read as a menu icon).
+    .block:last-child::before{
+        content: "";
+        width: 1.35rem;
+        aspect-ratio: 1;
+        background: radial-gradient(circle, rgba(0, 0, 0, 0.45) 0 0.11rem, transparent 0.13rem) 0 0 / 0.45rem 0.45rem;
+    }
     .menu-toggle{
         display: none;
         place-items: center;
-        padding: 0.5rem;
+        padding: 0.4rem;
         background: none;
         border: 0;
-        color: white;
+        color: var(--cream);
         cursor: pointer;
         svg{
-            height: 1.75rem;
-            width: 1.75rem;
+            height: 1.6rem;
+            width: 1.6rem;
         }
     }
 }
+@media (hover: hover) {
+    nav .links a:hover{ opacity: 1; background-color: var(--surface-hi); }
+}
+
+// The Pokédex's big blue lens and its red / yellow / green lights; they blink while Pokémon load.
+.dex-lights{
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    column-gap: 0.4rem;
+    row-gap: 0.25rem;
+    b{
+        grid-row: 1 / span 3;
+        width: 2.3rem;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #fff 0 7%, #9fdcff 12%, var(--lens) 42%, #0a3a8c 100%);
+        box-shadow: 0 0 0 0.22rem var(--cream), 0 0 0 0.36rem var(--bezel), 0 0 18px rgba(42, 139, 242, 0.55);
+    }
+    i{
+        width: 0.45rem;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: #ff3b3b;
+        box-shadow: 0 0 0 2px var(--bezel);
+        &:nth-of-type(2){ background: var(--volt); }
+        &:nth-of-type(3){ background: #3bd16f; }
+    }
+    &.busy{
+        b{ animation: lens 0.8s ease-in-out infinite alternate; }
+        i{ animation: blink 0.9s steps(1) infinite; }
+        i:nth-of-type(2){ animation-delay: 0.3s; }
+        i:nth-of-type(3){ animation-delay: 0.6s; }
+    }
+}
+@keyframes lens { to { box-shadow: 0 0 0 0.22rem var(--cream), 0 0 0 0.36rem var(--bezel), 0 0 32px 6px rgba(42, 139, 242, 0.9); } }
+@keyframes blink { 50% { opacity: 0.2; } }
+
 .mobile-menu{
     position: absolute;
     top: 100%;
-    left: 0;
-    right: 0;
+    left: var(--gutter);
+    right: var(--gutter);
     margin: 0;
-    padding: 0.5rem 0;
+    padding: 0.5rem;
     list-style: none;
-    background: rgba(4,6,20,0.97);
-    border-bottom: 0.5px solid rgba(255,255,255,0.8);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--screen);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     a, button{
         display: block;
         width: 100%;
-        padding: 1rem 1.5rem;
-        background: none;
+        padding: 0.9rem 1.2rem;
         border: 0;
-        color: white;
+        border-radius: var(--pill);
+        background: none;
+        color: var(--cream);
         font: inherit;
         text-align: left;
         text-decoration: none;
@@ -94,9 +133,16 @@ nav{
         letter-spacing: 0.15rem;
         cursor: pointer;
     }
-    a.active{ color: var(--accent-color); }
+    a.active{ background: var(--accent-color); color: var(--on-accent); }
+}
+@media (max-width: 1024px) {
+    .dex-lights{
+        b{ width: 2.1rem; }
+        i{ display: none; }
+    }
 }
 @media (max-width: 640px) {
+    .dex-lights b{ width: 1.9rem; }
     nav{
         .links{ display: none; }
         .current{
@@ -107,6 +153,7 @@ nav{
             text-transform: uppercase;
             letter-spacing: 0.2rem;
         }
+        .block:last-child::before{ display: none; }
         .menu-toggle{ display: grid; }
     }
 }

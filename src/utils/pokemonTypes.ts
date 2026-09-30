@@ -83,7 +83,7 @@ export const pokemonTypes = {
     image: fire,
     strength: [Bug, Steel, Grass, Ice],
     weakness: [Rock, Fire, Water, Dragon],
-    resistance: [Bug, Steel, Fire, Grass, Ice],
+    resistance: [Bug, Steel, Fire, Grass, Ice, Fairy],
     vulnerable: [Ground, Rock, Water],
   },
   flying: {
@@ -132,7 +132,7 @@ export const pokemonTypes = {
     image: poison,
     strength: [Grass, Fairy],
     weakness: [Poison, Ground, Rock, Ghost, Steel],
-    resistance: [Fighting, Poison, Grass, Fairy],
+    resistance: [Fighting, Poison, Bug, Grass, Fairy],
     vulnerable: [Ground, Psychic],
   },
   psychic: {
@@ -175,4 +175,34 @@ export const pokemonTypes = {
     resistance: [Steel, Fire, Water, Ice],
     vulnerable: [Grass, Electric],
   },
+};
+
+type Chart = Record<string, { strength: string[]; weakness: string[]; resistance: string[]; vulnerable: string[] }>;
+const chart: Chart = pokemonTypes;
+// Attacks that do nothing to a type. The chart files these under resistance; here they count as ×0.
+const immune: Record<string, string[]> = {
+  normal: [Ghost], ghost: [Normal, Fighting], flying: [Ground], ground: [Electric],
+  dark: [Psychic], steel: [Poison], fairy: [Dragon],
+};
+
+// A Pokémon's type matchups as labelled rows of [type, note] ("×4", "×¼", "×0" where it isn't plain ×2 / ×½).
+// Defending, each attacking type's effect on every one of its types is multiplied, as in the games, so a
+// second type can cancel a weakness (fire/flying isn't weak to ice, and ground can't touch it).
+// Attacking, it can use either type's moves, so those lists combine.
+export const matchupsOf = (types: string[]): [string, [string, string?][]][] => {
+  const effect = (attacker: string) =>
+    types.reduce((m, t) => {
+      const { vulnerable, resistance } = chart[t];
+      return m * (immune[t]?.includes(attacker) ? 0 : vulnerable.includes(attacker) ? 2 : resistance.includes(attacker) ? 0.5 : 1);
+    }, 1);
+  const defending = (hit: (m: number) => boolean, note: (m: number) => string | undefined) =>
+    Object.keys(chart).filter((a) => hit(effect(a))).map((a): [string, string?] => [a, note(effect(a))]);
+  const attacking = (key: "strength" | "weakness") =>
+    Array.from(new Set(types.flatMap((t) => chart[t][key]))).map((a): [string, string?] => [a]);
+  return [
+    ["Weak to", defending((m) => m > 1, (m) => (m > 2 ? "×4" : undefined))],
+    ["Resists", defending((m) => m < 1, (m) => (m === 0 ? "×0" : m < 0.5 ? "×¼" : undefined))],
+    ["Strong vs", attacking("strength")],
+    ["Resisted by", attacking("weakness")],
+  ];
 };

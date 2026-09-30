@@ -1,31 +1,81 @@
+// The Pokédex casing: nav on top, footer below, a side rail each way (--gutter), all red, with faint
+// rings spreading from the lens in the top-left block, as on the Pokédex's case.
 .app{
+    position: relative; // anchors the rail details
     height: 100vh;
     height: 100dvh; // mobile: the visible area, not the one hidden under the URL bar
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
     grid-template-columns: minmax(0, 1fr); // never wider than the screen, whatever the content
-    background: rgba(4,6,20,0.85);
-    // The page and the Pokédex lid share one cell, stacked (an error page lands there too).
+    color: var(--cream);
+    background:
+        repeating-radial-gradient(circle at calc(var(--block) / 2) calc(var(--bar) / 2), transparent 0 3rem, rgba(255, 255, 255, 0.06) 3rem 3.1rem),
+        radial-gradient(ellipse at 15% 0%, rgba(255, 255, 255, 0.16), transparent 45%),
+        linear-gradient(160deg, var(--dex-red), #b8092a 50%, var(--dex-red-lo));
+    // The screen: the page and the Pokédex lid, stacked in one cell (an error page lands there too).
     .stage{
         min-height: 0;
+        margin: 0 var(--gutter);
         display: grid;
         grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+        overflow: hidden;
+        border-radius: var(--radius-lg);
+        color: white;
+        // A Poké Ball drawn in faint lines off the bottom-right corner, LCD scanlines, a backlight from the top.
+        background:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23fff' stroke-opacity='.055' stroke-width='.8'%3E%3Ccircle cx='50' cy='50' r='49'/%3E%3Cpath d='M1 50h34m30 0h34'/%3E%3Ccircle cx='50' cy='50' r='15'/%3E%3Ccircle cx='50' cy='50' r='9'/%3E%3C/svg%3E") right -9rem bottom -11rem / 30rem no-repeat,
+            repeating-linear-gradient(rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 4px),
+            radial-gradient(ellipse at 50% -20%, var(--screen-hi), transparent 65%),
+            var(--screen);
+        // dark rim, then a thin highlight where it meets the casing
+        box-shadow: 0 0 0 0.4rem var(--bezel), 0 0 0 0.5rem rgba(255, 255, 255, 0.16), 0 20px 40px rgba(0, 0, 0, 0.35);
         > *{ grid-area: 1 / 1; }
     }
     .content{
+        position: relative; // a Pokémon's .scene fills it
         min-height: 0;
-        margin: 0 var(--gutter);
-        border: 0.5px solid rgba(255,255,255,0.2);
-        border-top: none;
-        background-color: rgba(255,255,255,0.052);
         overflow: hidden;
+    }
+    // Side rails: the Pokédex's hinge on the left, speaker vents on the right.
+    &::before, &::after{
+        content: "";
+        position: absolute;
+        pointer-events: none;
+    }
+    &::before{
+        top: calc(var(--bar) + 10%);
+        bottom: calc(var(--bar) + 10%);
+        left: calc(var(--gutter) / 2);
+        width: 0.8rem;
+        translate: -50% 0;
+        border-radius: 0.4rem;
+        background:
+            linear-gradient(transparent 32.5%, var(--bezel) 32.5% 34%, transparent 34% 66%, var(--bezel) 66% 67.5%, transparent 67.5%),
+            linear-gradient(90deg, #5e0412, #ff7382 38%, #c80c2c 62%, #4d030f);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+    }
+    &::after{
+        top: 50%;
+        right: calc(var(--gutter) / 2);
+        width: 0.45rem;
+        height: 7.2rem;
+        translate: 50% -50%;
+        background: radial-gradient(circle, rgba(0, 0, 0, 0.4) 0 0.15rem, transparent 0.17rem) 50% 0 / 100% 0.8rem;
+    }
+}
+// Phones: just a thin casing edge around the screen, no room for rail details.
+@media (max-width: 640px) {
+    .app{
+        padding-bottom: var(--gutter);
+        &::before, &::after{ display: none; }
     }
 }
 ::-webkit-scrollbar{
     background-color: transparent;
     width: 0.4rem;
     &-thumb{
-        background-color: rgba(219,219,219,0.557);
+        border-radius: var(--pill);
+        background-color: var(--line-strong);
     }
 }
 .main-container{

@@ -151,15 +151,12 @@ function Search() {
   }, [hasMore, isLoading, loadPage]);
 
   const surprise = () => navigate(`/pokemon/${idOf(withArt[Math.floor(Math.random() * withArt.length)])}`);
-  const busy = isLoading || !results;
 
   // Guests can browse; the cards' Add / Compare buttons ask them to log in.
   return (
     <div className='search'>
       <div className='search-console'>
         <div className='search-row'>
-          {/* The Pokédex's big lens and three lights; they blink while Pokémon load. */}
-          <span className={`dex-lights${busy ? ' busy' : ''}`} aria-hidden><b /><i /><i /><i /></span>
           <div className='search-field'>
             <IoSearch aria-hidden />
             <input

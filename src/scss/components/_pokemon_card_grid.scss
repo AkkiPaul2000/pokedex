@@ -24,17 +24,18 @@
 .pokemon-card{
     position: relative;
     z-index: 0; // own stacking context: keeps the faded dex number (z-index -1) inside the card
+    container-type: inline-size; // the dex number sizes itself to the card
     width: 100%;
     max-width: 16rem;
     padding: 1.2rem 0.8rem 0.8rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
     background:
         radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--type) 60%, transparent), transparent 62%),
-        linear-gradient(160deg, color-mix(in srgb, var(--type) 45%, #0b0d1c), #0b0d1c 88%);
+        linear-gradient(160deg, color-mix(in srgb, var(--type) 45%, var(--screen)), var(--screen) 88%);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     transition: transform 0.25s ease-out, box-shadow 0.3s;
     // Holo foil: a glare that follows the pointer plus a rainbow band that slides with it.
@@ -63,7 +64,8 @@
         text-decoration: none;
         transform-style: preserve-3d; // keeps the sprite's translateZ in the card's 3D space
     }
-    // Big faded dex number behind the sprite, like the katakana on the reference cards.
+    // Big faded dex number behind the sprite. --chars (the label's length) shrinks it to the card's
+    // width, so a five-digit form number fits like #001 does.
     &-id{
         position: absolute;
         z-index: -1;
@@ -72,8 +74,9 @@
         left: 0;
         translate: 0 -50%;
         text-align: center;
-        font-size: clamp(3rem, 12vw, 5rem);
+        font-size: min(5rem, calc(110cqi / var(--chars, 4)));
         line-height: 1;
+        white-space: nowrap;
         color: white;
         opacity: 0.12;
         pointer-events: none;
@@ -99,27 +102,12 @@
         transition: transform 0.45s ease-out, filter 0.45s;
     }
     &-types{
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-        gap: 0.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.35rem;
         margin-top: 0.5rem;
         transition: transform 0.3s ease;
-        &-type{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            &-image{
-                height: 2rem;
-            }
-            &-text{
-                margin: 0.3rem 0 0;
-                font-weight: 200;
-                font-size: smaller;
-                text-transform: uppercase;
-            }
-        }
     }
     &-actions{
         container-type: inline-size;
@@ -137,9 +125,9 @@
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 0.8rem;
-    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--pill);
+    background: var(--surface);
     color: white;
     font: inherit;
     font-size: 0.72rem;
@@ -160,9 +148,9 @@
 @media (hover: hover) {
     // BEM modifiers: a bare `.compare` would also pick up the Compare page's layout rule.
     .card-action{
-        &--add:hover{ background: #27af0f; border-color: #27af0f; }
-        &--compare:hover{ background: #1f51ff; border-color: #1f51ff; }
-        &--remove:hover{ background: #e21b5a; border-color: #e21b5a; }
+        &--add:hover{ background: var(--ok); border-color: var(--ok); }
+        &--compare:hover{ background: var(--lens); border-color: var(--lens); }
+        &--remove:hover{ background: var(--dex-red); border-color: var(--dex-red); }
     }
     .pokemon-card:hover{
         z-index: 2;

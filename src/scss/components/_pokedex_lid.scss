@@ -1,12 +1,11 @@
-// PokedexLid: a red top and a dark bottom meet on a black seam, a Poké Ball button in the middle.
-// Faint rings centred on the button echo the Pokédex's red casing.
+// PokedexLid: the casing's red top and the screen's dark bottom meet on a black seam, a Poké Ball
+// button in the middle. Faint rings centred on the button echo the casing's.
 .lid{
     --button: clamp(4.5rem, 13vmin, 7rem);
     --seam: 0.45rem;
     position: relative;
-    z-index: 3; // over the page; under the nav's mobile menu (5)
-    margin: 0 var(--gutter);
-    overflow: hidden; // halves slide out of the frame, not over the nav and footer
+    z-index: 3; // over the page; the screen's rounded clip keeps it off the casing
+    overflow: hidden; // halves slide off the screen, not over the nav and footer
     pointer-events: none;
 }
 .lid-half{
@@ -18,18 +17,18 @@
 }
 .lid-top{
     top: 0;
-    border-bottom: var(--seam) solid #0b0b12;
+    border-bottom: var(--seam) solid var(--bezel);
     background:
         repeating-radial-gradient(circle at 50% 100%, transparent 0 3.4rem, rgba(255, 255, 255, 0.08) 3.4rem 3.55rem),
-        linear-gradient(#f4501f, #c8260a);
+        linear-gradient(var(--dex-red-hi), var(--dex-red) 55%, var(--dex-red-lo));
     box-shadow: inset 0 -1.5rem 2.5rem rgba(0, 0, 0, 0.22);
 }
 .lid-bottom{
     bottom: 0;
-    border-top: var(--seam) solid #0b0b12;
+    border-top: var(--seam) solid var(--bezel);
     background:
         repeating-radial-gradient(circle at 50% 0, transparent 0 3.4rem, rgba(255, 255, 255, 0.05) 3.4rem 3.55rem),
-        linear-gradient(#1c2040, #0b0d1c);
+        linear-gradient(var(--screen-hi), var(--screen));
 }
 .lid-label, .lid-brand{
     position: absolute;
@@ -59,7 +58,7 @@
     aspect-ratio: 1;
     border-radius: 50%;
     // Push button, its grey ring, the white face, the black rim.
-    background: radial-gradient(circle, #fff 0 26%, #c9ced9 27% 33%, #f4f4f4 34% 62%, #0b0b12 63%);
+    background: radial-gradient(circle, #fff 0 26%, #c9ced9 27% 33%, var(--cream) 34% 62%, var(--bezel) 63%);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
     // Sonar ping while the lid is shut and the Pokémon loads.
     &::after{

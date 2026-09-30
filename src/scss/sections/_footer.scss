@@ -1,16 +1,21 @@
+// Bottom of the casing: a power light (left block), the Pokémon tabs or the recent trail in a recessed
+// slot, and log out (right block).
 footer{
     height: var(--bar);
     display: grid;
     grid-template-columns: var(--block) minmax(0, 1fr) var(--block);
-    border-top: 0.5px solid rgba(255,255,255,0.8);
+    align-items: center;
     .data{
         min-width: 0;
-        border: 0.5px solid white;
-        border-block: none;
+        height: calc(100% - 2 * var(--slot-gap));
+        overflow: hidden;
+        border-radius: var(--pill);
+        background: var(--screen);
+        box-shadow: var(--slot);
         ul{
             list-style: none;
             margin: 0;
-            padding: 0;
+            padding: 0.3rem;
             height: 100%;
             display: grid;
             grid-auto-flow: column;
@@ -18,39 +23,52 @@ footer{
         }
         button{
             position: relative;
+            isolation: isolate; // .pill slides behind the label
             width: 100%;
             height: 100%;
             padding: 0 0.25rem;
-            background: none;
             border: 0;
-            color: white;
+            border-radius: var(--pill);
+            background: none;
+            color: var(--cream);
             font: inherit;
-            font-size: clamp(0.6rem, 1.1vw, 1rem);
+            font-size: clamp(0.6rem, 1vw, 0.92rem);
             letter-spacing: clamp(0.04rem, 0.2vw, 0.2rem);
             text-transform: uppercase;
             cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-            span{ position: relative; } // label sits above the sliding pill
-        }
-        .pill{
-            position: absolute;
-            inset: 0;
-            background-color: var(--accent-color);
+            transition: background-color 0.2s;
+            &[aria-pressed="true"]{ color: var(--on-accent); }
         }
     }
     .block{
+        height: 100%;
         display: grid;
         place-items: center;
+        // Power light: the Pokédex is on.
+        &:first-child::before{
+            content: "";
+            width: 0.55rem;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: #3bd16f;
+            box-shadow: 0 0 0 2px var(--bezel), 0 0 10px #3bd16f;
+        }
         .logout{
             display: grid;
-            padding: 0.5rem;
-            background: none;
+            place-items: center;
+            width: 2.6rem;
+            aspect-ratio: 1;
+            padding: 0;
             border: 0;
-            color: red;
+            border-radius: 50%;
+            background: var(--screen);
+            box-shadow: var(--slot);
+            color: var(--cream);
             cursor: pointer;
+            transition: color 0.2s, background-color 0.2s;
             svg{
-                height: 2rem;
-                width: 2rem;
+                height: 1.3rem;
+                width: 1.3rem;
             }
         }
     }
@@ -61,7 +79,7 @@ footer{
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0 1.2rem;
+    padding: 0 0.5rem 0 1.3rem;
     overflow-x: auto;
     scrollbar-width: none;
     &::-webkit-scrollbar{ display: none; }
@@ -75,11 +93,11 @@ footer{
     }
     a{
         flex: none;
-        width: min(3.3rem, calc(var(--bar) - 1.2rem));
+        width: calc(var(--bar) - 2 * var(--slot-gap) - 0.6rem); // fills the slot's height
         aspect-ratio: 1;
         display: grid;
         place-items: center;
-        border: 1px solid rgba(255, 255, 255, 0.14);
+        border: 1px solid var(--line);
         border-radius: 50%;
         background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
         transition: transform 0.2s, border-color 0.2s, background-color 0.2s;
@@ -92,7 +110,8 @@ footer{
     }
 }
 @media (hover: hover) {
-    footer .data button:hover{ background-color: color-mix(in srgb, var(--accent-color) 30%, transparent); }
+    footer .data button:hover{ background-color: var(--surface-hi); }
+    footer .logout:hover{ color: white; background-color: var(--dex-red-lo); }
     .recent a:hover{
         transform: translateY(-3px) scale(1.12);
         border-color: var(--accent-color);
@@ -104,7 +123,7 @@ footer{
     footer{
         grid-template-columns: minmax(0, 1fr);
         .block{ display: none; }
-        .data{ border: none; }
+        .data{ margin: 0 var(--gutter); }
         &:not(.has-tabs){ display: none; }
     }
 }

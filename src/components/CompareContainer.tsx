@@ -1,44 +1,21 @@
 import React from 'react'
 import { AnimatePresence, motion } from 'framer-motion';
-import { generatedPokemonType, pokemonElementType, pokemonStatType, pokemonTypeInterface } from '../utils/Types'
+import { generatedPokemonType } from '../utils/Types'
 import { FaPlus } from 'react-icons/fa'
-import { pokemonTypes } from '../utils/pokemonTypes';
+import { matchupsOf } from '../utils/pokemonTypes';
+import { TypeRow } from './TypePill';
 import { useAppDispatch } from '../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { removeFromCompare } from '../app/slices/PokemonSlice';
 import { addPokemonToList } from '../app/reducers/addPokemonToList';
 
-const statRows: [string, pokemonStatType][] = [
-  ["Strength", "strength"],
-  ["Resistance", "resistance"],
-  ["Vulnerable", "vulnerable"],
-  ["Weakness", "weakness"],
-];
 const tap = { scale: 0.95 };
 const fade = { initial: { opacity: 0, scale: 0.96 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 0.96 }, transition: { duration: 0.2 } };
-
-// Every type the Pokémon's types are strong against / resist / etc., without duplicates.
-const matchups = (types: pokemonTypeInterface[], statType: pokemonStatType) =>
-  Array.from(new Set(types.flatMap((type) => Object.values(type)[0][statType])));
-
-function TypeIcons({ title, names }: { title: string; names: string[] }) {
-  return (
-    <div className="pokemon-types">
-      <h4 className='pokemon-type-title'>{title}</h4>
-      <div className="pokemon-type-icons">
-        {names.map((name) => (
-          <div className="pokemon-type" key={name}>
-            <img src={pokemonTypes[name as pokemonElementType].image} alt={name} title={name} className='pokemon-type-image' loading="lazy" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function CompareContainer({ pokemon }: { pokemon?: generatedPokemonType }) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const types = pokemon?.types.map((type) => Object.keys(type)[0]) ?? [];
   return (
     <div className='compare-container'>
       <AnimatePresence mode="wait">
@@ -49,10 +26,8 @@ function CompareContainer({ pokemon }: { pokemon?: generatedPokemonType }) {
               <img src={pokemon.image} alt={pokemon.name} className="compare-image" />
             </div>
             <div className="pokemon-types-container">
-              <TypeIcons title="Type" names={pokemon.types.map((type) => Object.keys(type)[0])} />
-              {statRows.map(([title, statType]) => (
-                <TypeIcons key={statType} title={title} names={matchups(pokemon.types, statType)} />
-              ))}
+              <TypeRow label="Type" entries={types.map((type): [string] => [type])} />
+              {matchupsOf(types).map(([label, entries]) => <TypeRow key={label} label={label} entries={entries} />)}
             </div>
             <div className="compare-action-buttons">
               <motion.button whileTap={tap} className="compare-btn" onClick={() => dispatch(addPokemonToList(pokemon))}>

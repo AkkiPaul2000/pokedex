@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import pokeballIcon from '../assets/pokeball-icon.png'
 import {GiHamburgerMenu} from 'react-icons/gi'
 import {IoClose} from 'react-icons/io5'
 import { NavLink, useLocation } from 'react-router-dom'
@@ -19,13 +18,16 @@ function Navbar() {
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
   const userInfo = useAppSelector(({ app }) => app.userInfo);
+  const isLoading = useAppSelector(({ app }) => app.isLoading);
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => setMenuOpen(false), [pathname]);
   const current = navigationRoutes.find(({ route }) => pathname.startsWith(route));
 
   return (
     <nav>
-      <div className='block'><img src={pokeballIcon} alt='Pokédex'/></div>
+      <div className='block'>
+        <span className={`dex-lights${isLoading ? ' busy' : ''}`} aria-hidden><b /><i /><i /><i /></span>
+      </div>
       <div className='data'>
         <ul className='links'>
           {navigationRoutes.map(({ name, route }) => (
@@ -34,8 +36,8 @@ function Navbar() {
                 {({ isActive }) => (
                   <>
                     {name}
-                    {/* One shared layoutId: framer slides the underline from the old link to the new one. */}
-                    {isActive && <motion.span layoutId='nav-underline' className='underline' transition={{ type: 'spring', stiffness: 500, damping: 40 }} />}
+                    {/* One shared layoutId: framer slides the pill from the old link to the new one. */}
+                    {isActive && <motion.span layoutId='nav-pill' className='pill' transition={{ type: 'spring', stiffness: 500, damping: 40 }} />}
                   </>
                 )}
               </NavLink>

@@ -8,7 +8,7 @@ function Description() {
   if (!pokemonData) return null
 
   return (
-    <div className='pokemon-detail' data-jp={pokemonData.japaneseName}>
+    <div className='pokemon-detail'>
       <PokeInfo data={pokemonData} />
       <PokemonContainer image={pokemonData.image} />
     </div>

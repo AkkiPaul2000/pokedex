@@ -6,32 +6,30 @@
     width: 100%;
     max-width: 100%;
     padding: 1rem;
+    // A cream Poké Ball-white pill, ringed in the accent.
     &-btn{
-        background-color: transparent;
-        color:white;
-        padding: 1rem 1.25rem;
-        font-size: clamp(0.95rem, 3.5vw, 1.5rem);
-        text-transform: uppercase;
-        border: 5px solid white;
-        cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;
-        gap:1rem;
-        transition: 0.4s ease-in-out;
-        font-weight: 700;
-        letter-spacing: clamp(0.05rem, 0.5vw, 0.2rem);
+        gap: 0.9rem;
+        padding: 0.9rem 1.6rem 0.9rem 1.2rem;
+        border: 0;
+        border-radius: var(--pill);
+        background-color: var(--cream);
+        color: var(--screen);
+        font: inherit;
+        font-size: clamp(0.9rem, 3.2vw, 1.25rem);
+        letter-spacing: clamp(0.05rem, 0.4vw, 0.15rem);
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 0.3rem color-mix(in srgb, var(--accent-color) 45%, transparent);
+        transition: box-shadow 0.3s;
         svg{
             flex: none;
-            font-size: 2em;
+            font-size: 1.8em;
         }
         &:hover{
-            border-radius: 3rem;
-            border-width: 10px;
-            border-top-color: red;
-            border-block-color: green;
-            border-left-color: yellow;
-            border-right-color: blue;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45), 0 0 0 0.45rem color-mix(in srgb, var(--accent-color) 75%, transparent);
         }
     }
 }

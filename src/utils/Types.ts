@@ -44,7 +44,6 @@ export interface currentPokemonType {
   weight: number; // kilograms
   genus?: string;
   description?: string;
-  japaneseName?: string;
   region?: string;
 }
 

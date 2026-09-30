@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, MotionConfig } from 'framer-motion';
-import Background from './components/Background';
 import PokedexLid from './components/PokedexLid';
 import './App.css';
 import './scss/index.scss';
@@ -43,6 +42,12 @@ function App() {
   // Shut while swapping to or from a Pokémon, and until that Pokémon's data is in.
   const closed = (dex && shown !== pathname) || (onDex(pathname) && String(loadedId) !== dexId);
 
+  // A type's colour belongs to its Pokémon's page (which sets it); other pages go back to the app's
+  // yellow. Waits for `shown`, so the switch happens under the shut lid.
+  useEffect(() => {
+    if (!onDex(shown)) delete document.documentElement.dataset.type;
+  }, [shown]);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
       dispatch(setUserStatus(currentUser ? { email: currentUser.email ?? '' } : null));
@@ -65,7 +70,6 @@ function App() {
     // reducedMotion="user": every framer animation honours the OS "reduce motion" setting.
     <MotionConfig reducedMotion="user">
       <div className='main-container'>
-        <Background />
         <div className='app'>
           <Navbar />
           <div className='stage'>

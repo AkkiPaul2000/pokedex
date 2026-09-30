@@ -16,14 +16,16 @@
             font-size: clamp(0.9rem, 1.5vw, 1.35rem);
             overflow-wrap: anywhere;
             text-align: center;
-            background-color: rgba(255, 255, 255,0.12);
-            border-radius: 1rem;
+            background-color: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: transform 0.25s ease-out, box-shadow 0.3s;
+            transition: transform 0.25s ease-out, box-shadow 0.3s, border-color 0.3s;
             &:hover {
-                box-shadow: 0 0 30px color-mix(in srgb, var(--accent-color) 60%, transparent);
+                border-color: color-mix(in srgb, var(--accent-color) 60%, transparent);
+                box-shadow: 0 0 30px color-mix(in srgb, var(--accent-color) 45%, transparent);
             }
         }
     }

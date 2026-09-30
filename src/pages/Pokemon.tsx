@@ -102,7 +102,6 @@ function Pokemon() {
           weight: data.weight / 10,
           genus: species.genera.find(english)?.genus,
           description: species.flavor_text_entries.find(english)?.flavor_text.replace(/\s+/g, " "),
-          japaneseName: species.names.find(({ language }) => language.name === "ja-hrkt")?.name,
           region: regions[species.generation.name.split("-")[1]],
         })
       );
@@ -123,6 +122,9 @@ function Pokemon() {
 
   // A revisit shows the stored entry at once (the refetch above refreshes it); App keeps the lid shut until then.
   return currentPokemon?.id === Number(params.id) ? (
+    <>
+    {/* Its primary type's habitat, animated, behind every tab (_scene.scss). */}
+    <span className="scene" data-type={currentPokemon.types[0]} aria-hidden />
     <AnimatePresence mode="wait">
       <motion.div
         key={currentPokemonTab}
@@ -138,6 +140,7 @@ function Pokemon() {
         {currentPokemonTab === pokemonTabs.moves && <CapableMoves />}
       </motion.div>
     </AnimatePresence>
+    </>
   ) : (
     <Loader />
   );

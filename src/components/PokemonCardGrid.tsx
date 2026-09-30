@@ -10,6 +10,7 @@ import { setToast } from '../app/slices/AppSlice';
 import { addPokemonToList } from '../app/reducers/addPokemonToList';
 import { removePokemon } from '../app/reducers/removePokemonFromUserLists';
 import { login } from '../auth/Login';
+import TypePill from './TypePill';
 
 const tap = { scale: 0.9 };
 
@@ -20,6 +21,7 @@ const PokemonCard = memo(function PokemonCard({ poke, index, removable }: { poke
   const inList = useAppSelector(({ pokemon }) => pokemon.userPokemons.some(({ id }) => id === poke.id));
   const inCompare = useAppSelector(({ pokemon }) => pokemon.compareQueue.some(({ id }) => id === poke.id));
   const typeName = Object.keys(poke.types[0] ?? {})[0];
+  const dex = `#${String(poke.id).padStart(3, '0')}`;
 
   const compare = () => {
     if (guest) return dispatch(login());
@@ -38,18 +40,13 @@ const PokemonCard = memo(function PokemonCard({ poke, index, removable }: { poke
     >
       <div className='pokemon-card tilt' data-type={typeName}>
         <Link to={`/pokemon/${poke.id}`} className='pokemon-card-link'>
-          <span className='pokemon-card-id'>#{String(poke.id).padStart(3, '0')}</span>
+          <span className='pokemon-card-id' style={{ '--chars': dex.length } as React.CSSProperties}>{dex}</span>
           <h3 className='pokemon-card-title'>{poke.name}</h3>
           <img src={poke.image} alt='' className='pokemon-card-image' loading='lazy' decoding='async' />
           <div className='pokemon-card-types'>
             {poke.types.map((type) => {
               const [name] = Object.keys(type);
-              return (
-                <div className='pokemon-card-types-type' key={name}>
-                  <img className='pokemon-card-types-type-image' src={type[name].image} alt='' loading='lazy' />
-                  <h4 className='pokemon-card-types-type-text'>{name}</h4>
-                </div>
-              );
+              return <TypePill key={name} type={name} />;
             })}
           </div>
         </Link>

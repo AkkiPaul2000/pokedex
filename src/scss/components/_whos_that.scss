@@ -14,11 +14,11 @@
     align-items: center;
     gap: 0.8rem 1rem;
     padding: 1.1rem 1.2rem;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
     background:
         radial-gradient(circle at 25% 58%, rgba(95, 170, 255, 0.45), transparent 45%),
-        linear-gradient(160deg, #1c4fa0, #0b0d1c 85%);
+        linear-gradient(160deg, #1c4fa0, var(--screen) 85%);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     &::before{
         content: "";
@@ -35,7 +35,7 @@
     &-title{
         grid-area: title;
         margin: 0;
-        color: #ffcb05;
+        color: var(--volt);
         font-size: clamp(1.1rem, 2.2vw, 1.5rem);
         letter-spacing: 0.06rem;
         text-shadow: 0 3px 0 #2a75bb, 0 0 18px rgba(255, 203, 5, 0.35);
@@ -61,9 +61,9 @@
         button{
             min-height: 2.3rem;
             padding: 0.35rem 0.8rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 2rem;
-            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--line-strong);
+            border-radius: var(--pill);
+            background: var(--surface);
             color: white;
             font: inherit;
             font-size: 0.72rem;
@@ -74,8 +74,8 @@
             transition: background-color 0.2s, border-color 0.2s, opacity 0.2s, translate 0.2s;
             &:disabled{ cursor: default; opacity: 0.4; }
             &.right, &.wrong{ opacity: 1; }
-            &.right{ background: #27af0f; border-color: #5fe046; box-shadow: 0 0 18px rgba(39, 175, 15, 0.6); }
-            &.wrong{ background: #e21b5a; border-color: #ff5d8c; animation: shake 0.4s; }
+            &.right{ background: var(--ok); border-color: color-mix(in srgb, var(--ok) 60%, white); box-shadow: 0 0 18px color-mix(in srgb, var(--ok) 60%, transparent); }
+            &.wrong{ background: var(--dex-red); border-color: var(--dex-red-hi); animation: shake 0.4s; }
         }
     }
     &-footer{
@@ -88,12 +88,12 @@
         letter-spacing: 0.12rem;
         .streak{
             margin-right: auto;
-            b{ color: #ffcb05; font-size: 1rem; }
+            b{ color: var(--volt); font-size: 1rem; }
         }
         a, button{
             padding: 0.45rem 0.9rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 2rem;
+            border: 1px solid var(--line-strong);
+            border-radius: var(--pill);
             background: none;
             color: white;
             font: inherit;
@@ -101,13 +101,13 @@
             text-transform: uppercase;
             cursor: pointer;
         }
-        button{ background: #ffcb05; border-color: #ffcb05; color: #14142b; }
+        button{ background: var(--volt); border-color: var(--volt); color: var(--screen); }
     }
 }
 @keyframes shake { 25% { translate: -5px 0; } 75% { translate: 5px 0; } }
 @media (hover: hover) {
-    .whos-that-options button:enabled:hover{ background: rgba(255, 255, 255, 0.18); translate: 4px 0; }
-    .whos-that-footer a:hover{ background: rgba(255, 255, 255, 0.12); }
+    .whos-that-options button:enabled:hover{ background: var(--surface-hi); translate: 4px 0; }
+    .whos-that-footer a:hover{ background: var(--surface-hi); }
     .whos-that-footer button:hover{ background: #ffd83d; }
 }
 // Beside the cards once the grid has room for a double-width tile.

@@ -1,3 +1,4 @@
+@use "sass:color";
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Tilt+Warp&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -6,7 +7,7 @@ body{
     margin: 0;
     padding: 0;
     font-family: "Tilt Warp", sans-serif;
-    background-color: black;
+    background-color: var(--dex-red-lo);
     color:white
 }
 
@@ -14,8 +15,10 @@ body{
     height: 100%;
     width: 100%;
 }
+.tab{ position: relative; } // above the Pokémon's .scene
 
 // Official type colours. `data-type` on <html> (current Pokémon) sets the accent; on a card it tints just that card.
+// --on-type is the label colour on a filled type swatch: dark on the light types (electric, ice, grass…), white on the rest.
 $type-colors: (
     normal: #a8a77a, fire: #ee8130, water: #6390f0, electric: #f7d02c,
     grass: #7ac74c, ice: #96d9d6, fighting: #c22e28, poison: #a33ea1,
@@ -24,19 +27,67 @@ $type-colors: (
     steel: #b7b7ce, fairy: #d685ad,
 );
 @each $name, $color in $type-colors {
-    [data-type="#{$name}"] { --type: #{$color}; }
+    $luma: 0.2126 * color.channel($color, "red", $space: rgb) + 0.7152 * color.channel($color, "green", $space: rgb)
+        + 0.0722 * color.channel($color, "blue", $space: rgb); // 0–255
+    [data-type="#{$name}"] {
+        --type: #{$color};
+        @if $luma > 153 { --on-type: var(--screen); } @else { --on-type: #fff; }
+    }
 }
 
-// --bar: nav/footer height. --block: their side columns. --gutter: the page's side margin.
-// Block and gutter match so the frame lines line up; on phones the page goes full-bleed.
+// The app is a Pokédex in the colours of the first games, Red, Blue and Yellow: a red casing (nav,
+// footer, side rails) around a deep blue screen, with yellow as the one highlight. Type colours are
+// kept for Pokémon themselves (cards, and a Pokémon's page, whose type becomes the accent).
+// Everything on the screen takes its lines, surfaces and radii from here, so every page reads the same.
 :root {
-    --accent-color: var(--type, #e3350d);
+    --dex-red: #dc0a2d;
+    --dex-red-hi: #ff4760;
+    --dex-red-lo: #7e0617;
+    --bezel: #1a0a10;
+    --screen: #0a0e22;
+    --screen-hi: #1a2455;
+    --panel: #121838; // a card's body, a shade above the screen
+    --cream: #fff4e6;
+    --volt: #ffcb05;
+    --lens: #2a8bf2;
+    --ok: #2fbf6a;
+    --line: rgba(255, 255, 255, 0.12);
+    --line-strong: rgba(255, 255, 255, 0.24);
+    --surface: rgba(255, 255, 255, 0.06);
+    --surface-hi: rgba(255, 255, 255, 0.11);
+    --radius-sm: 0.7rem;
+    --radius: 1rem;
+    --radius-lg: 1.25rem;
+    --pill: 999px;
+    --slot: inset 0 2px 8px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.22); // a recess in the casing
+    --accent-color: var(--type, var(--volt));
+    --on-accent: var(--on-type, var(--screen)); // text on an accent fill
+    // --bar: nav/footer height. --block: their side columns, which line up with the screen's side
+    // rails (--gutter). --slot-gap: casing above and below the nav/footer slots.
     --bar: clamp(3.75rem, 10vh, 5.5rem);
     --block: 5rem;
     --gutter: 5rem;
+    --slot-gap: 1rem;
 }
 @media (max-width: 1024px) { :root { --block: 3.5rem; --gutter: 3.5rem; } }
-@media (max-width: 640px) { :root { --bar: 3.5rem; --gutter: 0rem; } }
+@media (max-width: 640px) { :root { --bar: 3.5rem; --gutter: 0.5rem; --slot-gap: 0.45rem; } }
+
+// react-toastify's dark theme, recoloured (set on its container so its own :root defaults can't win).
+.Toastify{
+    --toastify-color-dark: var(--screen-hi);
+    --toastify-color-progress-dark: var(--volt);
+}
+
+// The sliding highlight behind the active nav link and footer tab (framer layoutId moves it).
+// Its button is `isolation: isolate`, so z-index -1 keeps it behind the label, inside the button.
+.pill{
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    border-radius: var(--pill);
+    background: var(--accent-color);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--accent-color) 55%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
 
 // No transform at rest: a resting 3D transform promoted every .tilt element (each card, move,
 // location) to its own GPU layer. Tilt only on real hover; index.tsx feeds --rx/--ry.
@@ -57,6 +108,7 @@ $type-colors: (
 // animation leaves toasts up forever. Hover tilt stays: it only moves when the user moves the pointer.
 @media (prefers-reduced-motion: reduce) {
     .pokemon-card:hover .pokemon-card-image, .circle-container > img,
-    .floor img, .background img, .pokemon-detail .stats i::before,
-    .lid-button::after, .whos-that::before, .dex-lights * { animation: none !important; }
+    .floor img, .pokemon-detail .stats i::before,
+    .lid-button::after, .whos-that::before, .dex-lights *,
+    .scene::before, .scene::after { animation: none !important; }
 }
