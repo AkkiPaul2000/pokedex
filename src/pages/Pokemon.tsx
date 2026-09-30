@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Wrapper from "../sections/Wrapper";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { setCurrentPokemon } from "../app/slices/PokemonSlice";
-import { setPokemonTab } from "../app/slices/AppSlice";
+import { setPokemonTab, setToast } from "../app/slices/AppSlice";
 import Loader from "../components/Loader";
 import { pokemonRoute, pokemonTabs, regions } from "../utils/Constant";
 import Description from "./PokemonPages/Description";
@@ -68,7 +68,6 @@ function Pokemon() {
     [getRecursiveEvolution]
   );
 
-  const [isDataLoading, setIsDataLoading] = useState(true);
   const getPokemonInfo = useCallback(
     async (image, signal) => {
       const { data } = await axios.get(`${pokemonRoute}/${params.id}`, { signal });
@@ -107,7 +106,6 @@ function Pokemon() {
           region: regions[species.generation.name.split("-")[1]],
         })
       );
-      setIsDataLoading(false);
     },
     [params.id, dispatch, getEvolutionData]
   );
@@ -115,13 +113,16 @@ function Pokemon() {
   useEffect(() => {
     // Abort on id change so a slow response for the previous Pokémon can't land last.
     const controller = new AbortController();
-    getPokemonInfo(images[params.id] || defaultImages[params.id], controller.signal).catch(
-      (err) => axios.isCancel(err) || console.error(err)
-    );
+    getPokemonInfo(images[params.id] || defaultImages[params.id], controller.signal).catch((err) => {
+      if (axios.isCancel(err)) return;
+      console.error(err);
+      dispatch(setToast("Couldn't load this Pokémon. Check your connection and try again."));
+    });
     return () => controller.abort();
-  }, [params.id, getPokemonInfo]);
+  }, [params.id, getPokemonInfo, dispatch]);
 
-  return !isDataLoading && currentPokemon ? (
+  // A revisit shows the stored entry at once (the refetch above refreshes it); App keeps the lid shut until then.
+  return currentPokemon?.id === Number(params.id) ? (
     <AnimatePresence mode="wait">
       <motion.div
         key={currentPokemonTab}

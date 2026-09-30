@@ -1,0 +1,116 @@
+// Search's quiz tile (WhosThatPokemon): the TV segment's ray burst behind a silhouette, four guesses.
+.whos-that{
+    grid-column: 1 / -1;
+    position: relative;
+    z-index: 0; // own stacking context for the rays; hovered cards (z-index 2) still pop over it
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "title  title"
+        "stage  options"
+        "footer footer";
+    align-items: center;
+    gap: 0.8rem 1rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.2rem;
+    background:
+        radial-gradient(circle at 25% 58%, rgba(95, 170, 255, 0.45), transparent 45%),
+        linear-gradient(160deg, #1c4fa0, #0b0d1c 85%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    &::before{
+        content: "";
+        position: absolute;
+        z-index: -1;
+        top: 58%;
+        left: 25%;
+        width: 160%;
+        aspect-ratio: 1;
+        translate: -50% -50%;
+        background: repeating-conic-gradient(rgba(255, 255, 255, 0.08) 0 7deg, transparent 7deg 14deg);
+        animation: spin 60s linear infinite;
+    }
+    &-title{
+        grid-area: title;
+        margin: 0;
+        color: #ffcb05;
+        font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+        letter-spacing: 0.06rem;
+        text-shadow: 0 3px 0 #2a75bb, 0 0 18px rgba(255, 203, 5, 0.35);
+    }
+    &-stage{
+        grid-area: stage;
+        display: grid;
+        place-items: center;
+        img{
+            width: min(100%, 11rem);
+            aspect-ratio: 1;
+            object-fit: contain;
+            filter: brightness(0) drop-shadow(0 0 10px rgba(140, 200, 255, 0.7));
+            transition: filter 0.6s;
+            user-select: none;
+        }
+    }
+    &.revealed &-stage img{ filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.5)); }
+    &-options{
+        grid-area: options;
+        display: grid;
+        gap: 0.45rem;
+        button{
+            min-height: 2.3rem;
+            padding: 0.35rem 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            font: inherit;
+            font-size: 0.72rem;
+            letter-spacing: 0.08rem;
+            text-transform: uppercase;
+            overflow-wrap: anywhere;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s, opacity 0.2s, translate 0.2s;
+            &:disabled{ cursor: default; opacity: 0.4; }
+            &.right, &.wrong{ opacity: 1; }
+            &.right{ background: #27af0f; border-color: #5fe046; box-shadow: 0 0 18px rgba(39, 175, 15, 0.6); }
+            &.wrong{ background: #e21b5a; border-color: #ff5d8c; animation: shake 0.4s; }
+        }
+    }
+    &-footer{
+        grid-area: footer;
+        min-height: 2.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.12rem;
+        .streak{
+            margin-right: auto;
+            b{ color: #ffcb05; font-size: 1rem; }
+        }
+        a, button{
+            padding: 0.45rem 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2rem;
+            background: none;
+            color: white;
+            font: inherit;
+            text-decoration: none;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        button{ background: #ffcb05; border-color: #ffcb05; color: #14142b; }
+    }
+}
+@keyframes shake { 25% { translate: -5px 0; } 75% { translate: 5px 0; } }
+@media (hover: hover) {
+    .whos-that-options button:enabled:hover{ background: rgba(255, 255, 255, 0.18); translate: 4px 0; }
+    .whos-that-footer a:hover{ background: rgba(255, 255, 255, 0.12); }
+    .whos-that-footer button:hover{ background: #ffd83d; }
+}
+// Beside the cards once the grid has room for a double-width tile.
+@media (min-width: 900px) {
+    .whos-that{ grid-column: span 2; }
+}

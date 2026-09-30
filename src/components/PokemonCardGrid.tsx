@@ -77,8 +77,9 @@ const PokemonCard = memo(function PokemonCard({ poke, index, removable }: { poke
   );
 });
 
-// `children` render inside the scroll container, after the cards (Search puts its load-more sentinel there).
-function PokemonCardGrid({ pokemons, children }: { pokemons?: userPokemonType[]; children?: React.ReactNode }) {
+// `lead` renders as the grid's first cell (Search's quiz); `children` render inside the scroll container,
+// after the cards (Search puts its load-more sentinel there).
+function PokemonCardGrid({ pokemons, lead, children }: { pokemons?: userPokemonType[]; lead?: React.ReactNode; children?: React.ReactNode }) {
   const { pathname } = useLocation();
   // Search and a Pokémon's evolutions offer "Add"; My List offers "Remove" (and animates removals).
   const removable = !(pathname.startsWith("/pokemon") || pathname.startsWith("/search"));
@@ -86,6 +87,7 @@ function PokemonCardGrid({ pokemons, children }: { pokemons?: userPokemonType[];
     <div className='pokemon-card-grid-container'>
       {pokemons && pokemons.length > 0 ? (
         <div className='pokemon-card-grid'>
+          {lead}
           <AnimatePresence>
             {pokemons.map((poke, index) => <PokemonCard key={poke.id} poke={poke} index={index} removable={removable} />)}
           </AnimatePresence>

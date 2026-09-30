@@ -7,12 +7,16 @@ import { addPokemonToList } from "../reducers/addPokemonToList";
 import { removePokemon } from "../reducers/removePokemonFromUserLists";
 import { setUserStatus } from "./AppSlice";
 
+// Footer saves `recent` so the trail survives a reload; storage can be missing or blocked.
+const savedRecent=()=>{ try { return JSON.parse(localStorage.getItem("recent") || "[]") } catch { return [] } }
+
 const initialState:PokemonTypeInitialState={
     allPokemon:undefined,
     randomPokemons:undefined,
     compareQueue:[],
     userPokemons:[],
     currentPokemon:undefined,
+    recent:savedRecent(),
 };
 export const PokemonSlice=createSlice({
     name:"pokemon",
@@ -30,6 +34,8 @@ export const PokemonSlice=createSlice({
           },
           setCurrentPokemon:(state,action)=>{
             state.currentPokemon=action.payload;
+            const {id,name}=action.payload;
+            state.recent=[{id,name},...state.recent.filter((pokemon)=>pokemon.id!==id)].slice(0,12);
           }
 
     },

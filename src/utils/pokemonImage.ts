@@ -21,3 +21,8 @@ export const images=fetchImages(
 export const defaultImages=fetchImages(
     require.context("../assets/pokemons/default",false,/\.(png|jpe?g|svg)$/)
 );
+
+// Local art for a dex id, shiny first as the cards show it; undefined when there is none.
+export const spriteOf = (id: number | string): string | undefined => images[id] || defaultImages[id];
+// Dex id of a PokeAPI list entry (".../pokemon/25/").
+export const idOf = ({ url }: { url: string }): number => Number(url.split("/").slice(-2)[0]);

@@ -11,6 +11,7 @@ export interface PokemonTypeInitialState {
   compareQueue: generatedPokemonType[];
   userPokemons: userPokemonType[];
   currentPokemon: currentPokemonType | undefined;
+  recent: { id: number; name: string }[]; // opened Pokémon, newest first
 }
 
 export interface genericPokemonType {
