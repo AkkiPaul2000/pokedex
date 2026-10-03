@@ -75,8 +75,8 @@ function App() {
           <div className='stage'>
             {/* Keyed by path so each page (and each Pokémon) animates out before the next animates in.
                 `custom` tells the leaving page to wait under the lid. The exit callback is captured when
-                the exit starts, so it reads the URL rather than a possibly stale `pathname`. */}
-            <AnimatePresence mode="wait" custom={dex} onExitComplete={() => setShown(window.location.pathname)}>
+                the exit starts, so it reads the URL (minus the Pages base path) rather than a possibly stale `pathname`. */}
+            <AnimatePresence mode="wait" custom={dex} onExitComplete={() => setShown(window.location.pathname.slice(process.env.PUBLIC_URL.length))}>
               <Routes location={location} key={pathname}>
                 <Route element={<Search />} path='/search' />
                 <Route element={<About />} path='/about' />
