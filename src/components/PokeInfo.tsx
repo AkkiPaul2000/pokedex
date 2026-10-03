@@ -10,6 +10,7 @@ import { addPokemonToList } from "../app/reducers/addPokemonToList";
 import { setPokemonTab } from "../app/slices/AppSlice";
 import { pokemonTabs } from "../utils/Constant";
 import { currentPokemonType } from "../utils/Types";
+import PokemonArt, { ShinyToggle } from "./PokemonArt";
 
 const dexNumber = (id: number) => `#${String(id).padStart(3, "0")}`;
 const press = { whileHover: { y: -2 }, whileTap: { scale: 0.95 } };
@@ -65,10 +66,11 @@ export default function PokeInfo({ data }: { data: currentPokemonType }) {
       <div className="poke-nav">
         {neighbours.map((id) => (
           <Link key={id} to={`/pokemon/${id}`} className={id < data.id ? "prev" : "next"}>
-            <img src={images[id] || defaultImages[id]} alt="" />
+            <PokemonArt id={id} />
             {dexNumber(id)}
           </Link>
         ))}
+        <ShinyToggle />
       </div>
     </>
   );

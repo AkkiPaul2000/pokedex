@@ -6,7 +6,7 @@ import { pokemonTabs } from '../utils/Constant'
 import { Link, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { logout } from '../auth/Login'
-import { spriteOf } from '../utils/pokemonImage'
+import PokemonArt from '../components/PokemonArt'
 
 const routes = [
   { name: pokemonTabs.description, value: "Description" },
@@ -46,7 +46,7 @@ function Footer() {
             <span className='recent-label'>{recent.length ? 'Recently seen' : 'Pokémon you open will show up here'}</span>
             {recent.map(({ id, name }) => (
               <Link key={id} to={`/pokemon/${id}`} title={name} aria-label={name}>
-                <img src={spriteOf(id)} alt='' />
+                <PokemonArt id={id} />
               </Link>
             ))}
           </div>

@@ -3,6 +3,7 @@ export interface AppTypeInitialState {
   userInfo: { email: string } | null;
   toasts: string[];
   currentPokemonTab: string;
+  shiny: boolean;
 }
 
 export interface PokemonTypeInitialState {

@@ -10,6 +10,7 @@ import { setToast } from '../app/slices/AppSlice';
 import { addPokemonToList } from '../app/reducers/addPokemonToList';
 import { removePokemon } from '../app/reducers/removePokemonFromUserLists';
 import { login } from '../auth/Login';
+import PokemonArt from './PokemonArt';
 import TypePill from './TypePill';
 
 const tap = { scale: 0.9 };
@@ -42,7 +43,7 @@ const PokemonCard = memo(function PokemonCard({ poke, index, removable }: { poke
         <Link to={`/pokemon/${poke.id}`} className='pokemon-card-link'>
           <span className='pokemon-card-id' style={{ '--chars': dex.length } as React.CSSProperties}>{dex}</span>
           <h3 className='pokemon-card-title'>{poke.name}</h3>
-          <img src={poke.image} alt='' className='pokemon-card-image' loading='lazy' decoding='async' />
+          <PokemonArt id={poke.id} className='pokemon-card-image' loading='lazy' decoding='async' />
           <div className='pokemon-card-types'>
             {poke.types.map((type) => {
               const [name] = Object.keys(type);

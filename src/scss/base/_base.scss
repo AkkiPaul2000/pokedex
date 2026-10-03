@@ -103,12 +103,37 @@ $type-colors: (
 @keyframes spin { to { rotate: 360deg; } }
 @keyframes grow { from { transform: scaleX(0); } }
 
-// Ambient motion only (framer animations follow MotionConfig reducedMotion="user"). Never a blanket
-// `*` rule: react-toastify closes toasts on its progress bar's animationend, so killing every
-// animation leaves toasts up forever. Hover tilt stays: it only moves when the user moves the pointer.
-@media (prefers-reduced-motion: reduce) {
-    .pokemon-card:hover .pokemon-card-image, .circle-container > img,
-    .floor img, .pokemon-detail .stats i::before,
-    .lid-button::after, .whos-that::before, .dex-lights *,
-    .scene::before, .scene::after { animation: none !important; }
+// Shiny switch (PokemonArt's ShinyToggle): a pill that fills with the page's accent when on.
+.shiny-toggle {
+    flex: none;
+    height: 2.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 0.85rem;
+    border: 1px solid color-mix(in srgb, var(--accent-color) 55%, transparent);
+    border-radius: var(--pill);
+    background: color-mix(in srgb, var(--accent-color) 16%, transparent);
+    color: white;
+    font: inherit;
+    font-size: 0.7rem;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    &[aria-pressed="true"] {
+        background: var(--accent-color);
+        color: var(--on-accent);
+        box-shadow: 0 0 18px color-mix(in srgb, var(--accent-color) 60%, transparent);
+    }
 }
+// Phones: icon only, like the Surprise button.
+@media (max-width: 640px) {
+    .shiny-toggle { padding: 0 0.7rem; }
+    .shiny-toggle span { display: none; }
+}
+
+// Reduced motion only drops the big moves: framer (MotionConfig reducedMotion="user") turns the lid and
+// page slides into cuts. The small ambient loops (scenes, floats, spins) and hover tilt stay, since Windows
+// reports reduced motion whenever its animation effects are off. No blanket `*` rule either:
+// react-toastify closes toasts on its progress bar's animationend.

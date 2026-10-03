@@ -8,6 +8,7 @@ import { useAppDispatch } from '../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { removeFromCompare } from '../app/slices/PokemonSlice';
 import { addPokemonToList } from '../app/reducers/addPokemonToList';
+import PokemonArt from './PokemonArt';
 
 const tap = { scale: 0.95 };
 const fade = { initial: { opacity: 0, scale: 0.96 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 0.96 }, transition: { duration: 0.2 } };
@@ -23,7 +24,7 @@ function CompareContainer({ pokemon }: { pokemon?: generatedPokemonType }) {
           <motion.div className="compare-element" key={pokemon.id} {...fade}>
             <div className="compare-details tilt">
               <h3>{pokemon.name}</h3>
-              <img src={pokemon.image} alt={pokemon.name} className="compare-image" />
+              <PokemonArt id={pokemon.id} alt={pokemon.name} className="compare-image" />
             </div>
             <div className="pokemon-types-container">
               <TypeRow label="Type" entries={types.map((type): [string] => [type])} />

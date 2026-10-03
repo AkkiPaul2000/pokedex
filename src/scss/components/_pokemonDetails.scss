@@ -149,8 +149,11 @@
 
   .poke-nav {
     grid-area: nav;
+    position: relative;
     display: flex;
     justify-content: space-between;
+    // Under the stand, between the neighbours (whichever of them exist).
+    .shiny-toggle { position: absolute; left: 50%; top: 50%; translate: -50% -50%; }
     a {
       display: flex;
       align-items: center;

@@ -10,7 +10,7 @@ function Description() {
   return (
     <div className='pokemon-detail'>
       <PokeInfo data={pokemonData} />
-      <PokemonContainer image={pokemonData.image} />
+      <PokemonContainer id={pokemonData.id} />
     </div>
   )
 }

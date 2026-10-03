@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { genericPokemonType } from '../utils/Types';
-import { idOf, spriteOf } from '../utils/pokemonImage';
+import { idOf } from '../utils/pokemonImage';
+import { useArt } from './PokemonArt';
 
 // Four different species, one of them the answer. Alternate forms (ids 10001+) are left out: their
 // silhouettes match the base form's.
@@ -21,6 +22,7 @@ function WhosThatPokemon({ pool }: { pool: genericPokemonType[] }) {
   const [{ options, answer }, setRound] = useState(() => newRound(pool));
   const [guess, setGuess] = useState<genericPokemonType>();
   const [streak, setStreak] = useState(0);
+  const art = useArt(idOf(answer));
 
   const pick = (option: genericPokemonType) => {
     setGuess(option);
@@ -37,7 +39,7 @@ function WhosThatPokemon({ pool }: { pool: genericPokemonType[] }) {
       <div className='whos-that-stage'>
         <motion.img
           key={answer.name}
-          src={spriteOf(idOf(answer))}
+          {...art}
           alt={guess ? answer.name : 'Mystery Pokémon'}
           draggable={false}
           initial={{ scale: 0.6, opacity: 0 }}

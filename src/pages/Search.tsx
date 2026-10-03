@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getPokemonsData } from '../app/reducers/getPokemonsData';
 import PokemonCardGrid from '../components/PokemonCardGrid';
 import WhosThatPokemon from '../components/WhosThatPokemon';
+import { ShinyToggle } from '../components/PokemonArt';
 import Wrapper from '../sections/Wrapper';
 import { debounce } from '../utils/Debounce';
 import Loader from '../components/Loader';
@@ -176,6 +177,7 @@ function Search() {
               <kbd title='Press / to search'>/</kbd>
             )}
           </div>
+          <ShinyToggle />
           <motion.button whileTap={{ scale: 0.92 }} className='surprise' onClick={surprise} disabled={!withArt.length} title='Open a random Pokémon'>
             <GiPerspectiveDiceSixFacesRandom /><span>Surprise me</span>
           </motion.button>
